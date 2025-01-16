@@ -10,5 +10,5 @@ data class UserProfile(
     val mobile: String = "",
     val updates: Boolean = false,
     val yob: String = "",
-    val avatar: Int = R.drawable.avatar_1 // Default avatar
+    val avatar: Int = R.drawable.avatar_1
 )
