@@ -1,4 +1,20 @@
 <resources>
     <string name="app_name">assignment1</string>
     <string name="title_activity_register">RegisterActivity</string>
+    <string name="login_screen_title">Login</string>
+    <string name="register_screen_title">Register</string>
+    <string name="landing_screen_title">Movies</string>
+    <string name="profile_screen_title">Profile</string>
+    <string name="edit_profile_screen_title">Edit Profile</string>
+    <string name="view_profile">View Profile</string>
+    <string name="logout">Logout</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="login_screen_route">login_screen</string>
+    <string name="register_screen_route">register_screen</string>
+    <string name="landing_screen_route">landing_screen</string>
+    <string name="profile_screen_route">profile</string>
+    <string name="edit_profile_screen_route">edit_profile_screen</string>
+    <string name="movie_detail_screen_route">movieDetail/{movieTitle}</string>
+    <string name="comment_screen_route">comment_screen/{movieTitle}/{commentUser}/{commentText}/{commentDate}/{commentTime}</string>
+    <string name="add_comment_screen_route">add_comment_screen/{movieTitle}</string>
 </resources>
