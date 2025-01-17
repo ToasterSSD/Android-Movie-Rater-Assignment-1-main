@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">assignment1</string>
+    <string name="app_name">Dit230307Q Movie Viewer</string>
     <string name="title_activity_register">RegisterActivity</string>
     <string name="login_screen_title">Login</string>
     <string name="register_screen_title">Register</string>
