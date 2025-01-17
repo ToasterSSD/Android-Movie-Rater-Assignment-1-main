@@ -1,4 +1,4 @@
-package com.it2161.dit230307Q.assignment1.ui.theme
+package com.it2161.dit230307Q.movieviewer.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

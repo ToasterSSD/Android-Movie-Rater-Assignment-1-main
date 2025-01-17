@@ -1,4 +1,4 @@
-package com.it2161.dit230307Q.assignment1
+package com.it2161.dit230307Q.movieviewer
 
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,14 +12,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.it2161.dit230307Q.assignment1.ui.components.AddCommentScreen
-import com.it2161.dit230307Q.assignment1.ui.components.CommentMovieScreen
-import com.it2161.dit230307Q.assignment1.ui.components.EditProfileScreen
-import com.it2161.dit230307Q.assignment1.ui.components.LandingScreen
-import com.it2161.dit230307Q.assignment1.ui.components.LoginScreen
-import com.it2161.dit230307Q.assignment1.ui.components.MovieDetailScreen
-import com.it2161.dit230307Q.assignment1.ui.components.ProfileScreen
-import com.it2161.dit230307Q.assignment1.ui.components.RegisterUserScreen
+import com.it2161.dit230307Q.movieviewer.ui.components.AddCommentScreen
+import com.it2161.dit230307Q.movieviewer.ui.components.CommentMovieScreen
+import com.it2161.dit230307Q.movieviewer.ui.components.EditProfileScreen
+import com.it2161.dit230307Q.movieviewer.ui.components.LandingScreen
+import com.it2161.dit230307Q.movieviewer.ui.components.LoginScreen
+import com.it2161.dit230307Q.movieviewer.ui.components.MovieDetailScreen
+import com.it2161.dit230307Q.movieviewer.ui.components.ProfileScreen
+import com.it2161.dit230307Q.movieviewer.ui.components.RegisterUserScreen
 
 @ExperimentalMaterial3Api
 @Composable

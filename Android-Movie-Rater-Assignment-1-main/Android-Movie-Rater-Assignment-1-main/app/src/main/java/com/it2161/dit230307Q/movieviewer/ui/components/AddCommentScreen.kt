@@ -1,5 +1,5 @@
 
-package com.it2161.dit230307Q.assignment1.ui.components
+package com.it2161.dit230307Q.movieviewer.ui.components
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
@@ -37,8 +37,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.it2161.dit230307Q.assignment1.MovieRaterApplication
-import com.it2161.dit230307Q.assignment1.data.Comments
+import com.it2161.dit230307Q.movieviewer.MovieRaterApplication
+import com.it2161.dit230307Q.movieviewer.data.Comments
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 

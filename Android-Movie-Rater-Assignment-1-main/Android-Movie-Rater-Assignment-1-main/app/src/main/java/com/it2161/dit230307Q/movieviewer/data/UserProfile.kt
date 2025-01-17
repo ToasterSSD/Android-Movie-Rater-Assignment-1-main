@@ -1,6 +1,6 @@
-package com.it2161.dit230307Q.assignment1.data
+package com.it2161.dit230307Q.movieviewer.data
 
-import com.it2161.dit230307Q.assignment1.R
+import com.it2161.dit230307Q.movieviewer.R
 
 data class UserProfile(
     val userName: String = "",

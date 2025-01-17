@@ -1,4 +1,4 @@
-package com.it2161.dit230307Q.assignment1.ui.components
+package com.it2161.dit230307Q.movieviewer.ui.components
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -40,9 +40,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.it2161.dit230307Q.assignment1.MovieRaterApplication
-import com.it2161.dit230307Q.assignment1.R
-import com.it2161.dit230307Q.assignment1.data.UserProfile
+import com.it2161.dit230307Q.movieviewer.MovieRaterApplication
+import com.it2161.dit230307Q.movieviewer.R
+import com.it2161.dit230307Q.movieviewer.data.UserProfile
 import java.util.Calendar
 
 @Composable

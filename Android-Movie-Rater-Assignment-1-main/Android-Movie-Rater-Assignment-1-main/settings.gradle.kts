@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "assignment1"
+rootProject.name = "230307Q Movie Viewer"
 include(":app")
  

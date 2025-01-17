@@ -1,4 +1,4 @@
-package com.it2161.dit230307Q.assignment1.ui.components
+package com.it2161.dit230307Q.movieviewer.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.it2161.dit230307Q.assignment1.data.Comments
+import com.it2161.dit230307Q.movieviewer.data.Comments
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit

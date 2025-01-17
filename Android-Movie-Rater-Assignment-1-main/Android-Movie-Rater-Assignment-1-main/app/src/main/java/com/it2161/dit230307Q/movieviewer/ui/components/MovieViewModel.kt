@@ -1,12 +1,12 @@
-package com.it2161.dit230307Q.assignment1.ui.components
+package com.it2161.dit230307Q.movieviewer.ui.components
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.it2161.dit230307Q.assignment1.MovieRaterApplication
-import com.it2161.dit230307Q.assignment1.data.MovieItem
+import com.it2161.dit230307Q.movieviewer.MovieRaterApplication
+import com.it2161.dit230307Q.movieviewer.data.MovieItem
 import kotlinx.coroutines.launch
 
 class MovieViewModel : ViewModel() {

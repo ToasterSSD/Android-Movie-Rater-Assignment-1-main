@@ -1,4 +1,4 @@
-package com.it2161.dit230307Q.assignment1
+package com.it2161.dit230307Q.movieviewer
 
 import org.junit.Test
 

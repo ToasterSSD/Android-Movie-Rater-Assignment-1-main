@@ -1,4 +1,4 @@
-package com.it2161.dit230307Q.assignment1.ui.components
+package com.it2161.dit230307Q.movieviewer.ui.components
 
 import android.content.Context
 import android.widget.Toast
@@ -35,8 +35,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.it2161.dit230307Q.assignment1.MovieRaterApplication
-import com.it2161.dit230307Q.assignment1.R
+import com.it2161.dit230307Q.movieviewer.MovieRaterApplication
+import com.it2161.dit230307Q.movieviewer.R
 
 @Composable
 fun LoginScreen(
