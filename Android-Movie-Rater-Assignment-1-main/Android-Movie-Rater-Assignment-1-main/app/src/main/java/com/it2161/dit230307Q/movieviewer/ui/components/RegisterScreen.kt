@@ -1,6 +1,7 @@
 package com.it2161.dit230307Q.movieviewer.ui.components
 
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -246,7 +247,11 @@ fun RegisterUserScreen(
 
             // Year of Birth Dropdown
             var expanded by remember { mutableStateOf(false) }
-            Box {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { expanded = !expanded }
+            ) {
                 OutlinedTextField(
                     value = yob,
                     onValueChange = {},
