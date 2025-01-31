@@ -108,7 +108,6 @@ fun LandingScreen(navController: NavController, movieViewModel: MovieViewModel =
 
 @Composable
 fun MovieItemCard(movie: MovieItem, configuration: ConfigurationResponse?, movieImages: MovieImagesResponse?, onClick: () -> Unit) {
-    val imageUrl = configuration?.images?.secure_base_url + configuration?.images?.poster_sizes?.get(2) + movie.poster_path
     val backdropUrl = movieImages?.backdrops?.firstOrNull()?.file_path?.let { configuration?.images?.secure_base_url + configuration?.images?.backdrop_sizes?.get(1) + it }
 
     Card(
@@ -123,8 +122,8 @@ fun MovieItemCard(movie: MovieItem, configuration: ConfigurationResponse?, movie
             modifier = Modifier.padding(8.dp)
         ) {
             Image(
-                painter = rememberAsyncImagePainter(backdropUrl ?: imageUrl),
-                contentDescription = "Poster for ${movie.title}",
+                painter = rememberAsyncImagePainter(backdropUrl),
+                contentDescription = "Backdrop for ${movie.title}",
                 modifier = Modifier
                     .size(100.dp)
                     .clip(RoundedCornerShape(8.dp))
