@@ -1,172 +1,156 @@
 package com.it2161.dit230307Q.movieviewer
 
-//import com.it2161.dit230307Q.movieviewer.data.Comments
-//import com.it2161.dit230307Q.movieviewer.data.MovieItem
-//import com.it2161.dit230307Q.movieviewer.data.UserProfile
 import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.it2161.dit230307Q.movieviewer.data.Comments
-import com.it2161.dit230307Q.movieviewer.data.MovieItem
-import com.it2161.dit230307Q.movieviewer.data.UserProfile
-import com.it2161.dit230307Q.movieviewer.data.mvBeneathTheSurface
-import com.it2161.dit230307Q.movieviewer.data.mvCityOfShadowsData
-import com.it2161.dit230307Q.movieviewer.data.mvEchosOfEternityData
-import com.it2161.dit230307Q.movieviewer.data.mvIntoTheUnknownData
-import com.it2161.dit230307Q.movieviewer.data.mvLostInTimeData
-import com.it2161.dit230307Q.movieviewer.data.mvShadowsOfthePastData
-import com.it2161.dit230307Q.movieviewer.data.mvTheLastFrontierData
-import com.it2161.dit230307Q.movieviewer.data.mvTheSilentStormData
+import com.it2161.dit230307Q.movieviewer.data.*
 import jsonData
 import org.json.JSONArray
+import org.json.JSONException
 import java.io.File
 
 class MovieRaterApplication : Application() {
-    companion object{
-        lateinit var instance : MovieRaterApplication
+    companion object {
+        lateinit var instance: MovieRaterApplication
             private set
     }
 
     var data = mutableListOf<MovieItem>()
-        get() = field
         set(value) {
             field = value
             saveListFile(applicationContext)
         }
 
     var userProfile: UserProfile? = null
-        get() = field
         set(value) {
             if (value != null) {
                 field = value
                 saveProfileToFile(applicationContext)
             }
-
         }
 
     override fun onCreate() {
         super.onCreate()
         instance = this
-        //Loads Profile and Movie details
         loadData(applicationContext)
     }
 
-    //Loads the movie data into the list.
     private fun loadMovieDataIntoList(context: Context) {
-        val jsonArray = JSONArray(jsonData)
-
-
-        val file = File(context.filesDir, "movielist.dat")
-        if (!file.exists()) {
-            for (i in 0 until jsonArray.length()) {
-                val jsonObject = jsonArray.getJSONObject(i)
-                val title = jsonObject.getString("title")
-                val director = jsonObject.getString("director")
-                val releaseDate = jsonObject.getString("release_date")
-                var rating = jsonObject.getString("rating").split("/")[0].toFloat()
-                val poster = jsonObject.getString("image")
-                val actors = jsonObject.getJSONArray("actors")
-                val genre = jsonObject.getString("genre")
-                val length = jsonObject.getInt("length")
-                val synopsis = jsonObject.getString("synopsis")
-                val comments = jsonObject.getJSONArray("comments")
-                val listOfComments = mutableListOf<Comments>()
-
-
-                for (i in 0 until comments.length()) {
-                    val commentsObj = comments.getJSONObject(i)
-                    val user = commentsObj.getString("user")
-                    val comment = commentsObj.getString("comment")
-                    val date = commentsObj.getString("date")
-                    val time = commentsObj.getString("time")
-                    val newComment = Comments(user, comment,date,time)
-                    listOfComments.add(newComment)
-
-                }
-                data.add(
-                    MovieItem(
-                        title = title,
-                        director = director,
-                        releaseDate = releaseDate,
-                        ratings_score = rating.toFloat(),
-                        actors = actors.toString().split(","),
-                        image = poster,
-                        genre = genre,
-                        length = length,
-                        synopsis = synopsis,
-                        comment = listOfComments
-                    )
-                )
-            }
-        } else {
-
+        try {
+            val jsonArray = JSONArray(jsonData)
             val file = File(context.filesDir, "movielist.dat")
-            data = try {
+            if (!file.exists()) {
+                for (i in 0 until jsonArray.length()) {
+                    val jsonObject = jsonArray.getJSONObject(i)
+
+                    if (!jsonObject.has("id")) {
+                        Log.e("MovieRaterApplication", "Missing 'id' field in JSON object at index $i")
+                        continue
+                    }
+
+                    val id = jsonObject.getInt("id")
+                    val title = jsonObject.optString("title", "Unknown Title")
+                    val director = jsonObject.optString("director", "Unknown Director")
+                    val releaseDate = jsonObject.optString("release_date", "Unknown Date")
+                    val rating = jsonObject.optString("rating", "0.0/10").split("/")[0].toFloatOrNull() ?: 0.0f
+                    val poster = jsonObject.optString("image", "")
+                    val genre = jsonObject.optString("genre", "Unknown Genre")
+                    val length = jsonObject.optInt("length", 0)
+                    val synopsis = jsonObject.optString("synopsis", "No synopsis available")
+                    val overview = jsonObject.optString("overview", "No overview available")
+                    val posterPath = jsonObject.optString("poster_path", "")
+                    val voteAverage = jsonObject.optDouble("vote_average", 0.0).toFloat()
+
+                    val actorsArray = jsonObject.optJSONArray("actors")
+                    val actors = mutableListOf<String>()
+                    actorsArray?.let {
+                        for (j in 0 until it.length()) {
+                            actors.add(it.optString(j, "Unknown Actor"))
+                        }
+                    }
+
+                    val commentsArray = jsonObject.optJSONArray("comments")
+                    val listOfComments = mutableListOf<Comments>()
+                    commentsArray?.let {
+                        for (j in 0 until it.length()) {
+                            val commentsObj = it.getJSONObject(j)
+                            val user = commentsObj.optString("user", "Anonymous")
+                            val comment = commentsObj.optString("comment", "No comment")
+                            val date = commentsObj.optString("date", "Unknown Date")
+                            val time = commentsObj.optString("time", "Unknown Time")
+                            listOfComments.add(Comments(user, comment, date, time))
+                        }
+                    }
+
+                    data.add(
+                        MovieItem(
+                            id = id,
+                            title = title,
+                            overview = overview,
+                            poster_path = posterPath,
+                            vote_average = voteAverage,
+                            director = director,
+                            releaseDate = releaseDate,
+                            ratings_score = rating,
+                            actors = actors,
+                            image = poster,
+                            genre = genre,
+                            length = length,
+                            synopsis = synopsis,
+                            comment = listOfComments
+                        )
+                    )
+                }
+            } else {
                 val jsonString = file.readText()
                 val gson = Gson()
-                val type = object :
-                    TypeToken<List<MovieItem>>() {}.type // TypeToken reflects the updated Movie class
-                gson.fromJson(jsonString, type)
-            } catch (e: Exception) {
-                mutableListOf<MovieItem>()
+                val type = object : TypeToken<List<MovieItem>>() {}.type
+                data = gson.fromJson(jsonString, type) ?: mutableListOf()
             }
+        } catch (e: JSONException) {
+            Log.e("MovieRaterApplication", "JSON Parsing error: ${e.message}")
+        } catch (e: Exception) {
+            Log.e("MovieRaterApplication", "Unexpected error: ${e.message}")
         }
-
-
     }
 
     private fun saveListFile(context: Context) {
-
-
-        if (context != null) {
-            val gson = Gson()
-            val jsonString = gson.toJson(data)
-            val file = File(context.filesDir, "movielist.dat")
-            file.writeText(jsonString)
-        }
-
+        val gson = Gson()
+        val jsonString = gson.toJson(data)
+        val file = File(context.filesDir, "movielist.dat")
+        file.writeText(jsonString)
     }
 
     private fun saveProfileToFile(context: Context) {
-
-        if (context != null) {
-            val gson = Gson()
-            val jsonString = gson.toJson(userProfile)
-            val file = File(context.filesDir, "profile.dat")
-            file.writeText(jsonString)
-        }
+        val gson = Gson()
+        val jsonString = gson.toJson(userProfile)
+        val file = File(context.filesDir, "profile.dat")
+        file.writeText(jsonString)
     }
 
     private fun loadProfileFromFile(context: Context) {
-
         val file = File(context.filesDir, "profile.dat")
-        userProfile =
-            try {
-                val jsonString = file.readText()
-                val gson = Gson()
-                val type = object :
-                    TypeToken<UserProfile>() {}.type // TypeToken reflects the updated Movie class
-                gson.fromJson(jsonString, type)
-            } catch (e: Exception) {
-                null
-            }
+        userProfile = try {
+            val jsonString = file.readText()
+            val gson = Gson()
+            gson.fromJson(jsonString, object : TypeToken<UserProfile>() {}.type)
+        } catch (e: Exception) {
+            null
+        }
     }
 
     private fun loadData(context: Context) {
         loadProfileFromFile(context)
         loadMovieDataIntoList(context)
-
     }
 
-    //Gets image vector.
     fun getImgVector(fileName: String): Bitmap {
-
         val dataValue = when (fileName) {
-
             "IntoTheUnknown" -> mvIntoTheUnknownData
             "EchosOfEternity" -> mvEchosOfEternityData
             "LostInTime" -> mvLostInTimeData
@@ -176,17 +160,14 @@ class MovieRaterApplication : Application() {
             "CityOfShadows" -> mvCityOfShadowsData
             "SilentStorm" -> mvTheSilentStormData
             else -> ""
-
         }
 
-        val imageBytes = Base64.decode(
-            dataValue,
-            Base64.DEFAULT
-        )
-        val imageBitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-
-        return imageBitmap
+        return try {
+            val imageBytes = Base64.decode(dataValue, Base64.DEFAULT)
+            BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+        } catch (e: Exception) {
+            Log.e("MovieRaterApplication", "Error decoding image: ${e.message}")
+            Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888) // Return a blank bitmap on error
+        }
     }
-
-
 }

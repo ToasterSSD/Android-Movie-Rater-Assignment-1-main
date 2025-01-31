@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
 
     implementation(libs.retrofit)
+    implementation(libs.converter.gson)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.retrofit2.kotlinx.serialization.converter)
     implementation(libs.okhttp)
