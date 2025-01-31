@@ -2,7 +2,9 @@ package com.it2161.dit230307Q.movieviewer.data.repository
 
 import android.content.Context
 import com.it2161.dit230307Q.movieviewer.R
+import com.it2161.dit230307Q.movieviewer.model.ConfigurationResponse
 import com.it2161.dit230307Q.movieviewer.model.MovieResponse
+import com.it2161.dit230307Q.movieviewer.model.MovieImagesResponse
 import com.it2161.dit230307Q.movieviewer.network.TMDBService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -24,4 +26,6 @@ class MovieRepository(context: Context) {
     suspend fun getTopRatedMovies(): MovieResponse = service.getTopRatedMovies(apiKey)
     suspend fun getNowPlayingMovies(): MovieResponse = service.getNowPlayingMovies(apiKey)
     suspend fun getUpcomingMovies(): MovieResponse = service.getUpcomingMovies(apiKey)
+    suspend fun getConfiguration(): ConfigurationResponse = service.getConfiguration(apiKey)
+    suspend fun getMovieImages(movieId: Int): MovieImagesResponse = service.getMovieImages(movieId, apiKey)
 }

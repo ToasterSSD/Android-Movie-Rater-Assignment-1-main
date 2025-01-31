@@ -1,6 +1,5 @@
 package com.it2161.dit230307Q.movieviewer.data
 
-
 data class MovieItem(
     val id: Int,
     val title: String,
@@ -24,5 +23,3 @@ data class Comments(
     val date: String,
     val time: String,
 )
-
-

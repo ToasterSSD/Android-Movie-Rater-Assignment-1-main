@@ -9,6 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.it2161.dit230307Q.movieviewer.MovieRaterApplication
 import com.it2161.dit230307Q.movieviewer.data.MovieItem
 import com.it2161.dit230307Q.movieviewer.data.repository.MovieRepository
+import com.it2161.dit230307Q.movieviewer.model.ConfigurationResponse
+import com.it2161.dit230307Q.movieviewer.model.MovieImagesResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -22,8 +24,15 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
     private val _movies = MutableStateFlow<List<MovieItem>>(emptyList())
     val movies: StateFlow<List<MovieItem>> = _movies
 
+    var configuration: ConfigurationResponse? by mutableStateOf(null)
+        private set
+
+    private val _movieImages = MutableStateFlow<Map<Int, MovieImagesResponse>>(emptyMap())
+    val movieImages: StateFlow<Map<Int, MovieImagesResponse>> = _movieImages
+
     init {
         fetchMovies("Popular")
+        fetchConfiguration()
     }
 
     fun loadMovie(movieTitle: String) {
@@ -42,6 +51,22 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
                 else -> repository.getPopularMovies()
             }
             _movies.value = response.results
+            response.results.forEach { movie ->
+                fetchMovieImages(movie.id)
+            }
+        }
+    }
+
+    private fun fetchConfiguration() {
+        viewModelScope.launch {
+            configuration = repository.getConfiguration()
+        }
+    }
+
+    private fun fetchMovieImages(movieId: Int) {
+        viewModelScope.launch {
+            val imagesResponse = repository.getMovieImages(movieId)
+            _movieImages.value = _movieImages.value + (movieId to imagesResponse)
         }
     }
 }

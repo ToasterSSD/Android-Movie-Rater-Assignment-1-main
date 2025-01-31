@@ -1,9 +1,11 @@
 package com.it2161.dit230307Q.movieviewer.network
 
+import com.it2161.dit230307Q.movieviewer.model.ConfigurationResponse
 import com.it2161.dit230307Q.movieviewer.model.MovieResponse
+import com.it2161.dit230307Q.movieviewer.model.MovieImagesResponse
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
-
 
 interface TMDBService {
     @GET("movie/popular")
@@ -17,4 +19,10 @@ interface TMDBService {
 
     @GET("movie/upcoming")
     suspend fun getUpcomingMovies(@Query("api_key") apiKey: String): MovieResponse
+
+    @GET("configuration")
+    suspend fun getConfiguration(@Query("api_key") apiKey: String): ConfigurationResponse
+
+    @GET("movie/{movie_id}/images")
+    suspend fun getMovieImages(@Path("movie_id") movieId: Int, @Query("api_key") apiKey: String): MovieImagesResponse
 }
