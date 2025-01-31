@@ -17,4 +17,7 @@
     <string name="movie_detail_screen_route">movieDetail/{movieTitle}</string>
     <string name="comment_screen_route">comment_screen/{movieTitle}/{commentUser}/{commentText}/{commentDate}/{commentTime}</string>
     <string name="add_comment_screen_route">add_comment_screen/{movieTitle}</string>
+<!--apikey-->
+    <string name="tmdb_api_key">f4a4a3ea02d97c10e8ceacab4addf80b</string>
+    <string name="tmdb_read_access_token">eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmNGE0YTNlYTAyZDk3YzEwZThjZWFjYWI0YWRkZjgwYiIsIm5iZiI6MTczNzkyMDc0NC4wODMwMDAyLCJzdWIiOiI2Nzk2OTBlOGM3YjAxYjcyYzcyM2UzYmYiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.5aMaKBRc3cTEmqQtJmEkP-bsBj32DfEL_H37AXetEiE</string>
 </resources>
