@@ -88,9 +88,9 @@ fun MovieViewerApp() {
                 )
             }
 
-            composable("movieDetail/{movieTitle}") { backStackEntry ->
-                val movieTitle = backStackEntry.arguments?.getString("movieTitle")
-                MovieDetailScreen(movieTitle = movieTitle, navController = navController)
+            composable("movieDetail/{movieId}", arguments = listOf(navArgument("movieId") { type = NavType.IntType })) { backStackEntry ->
+                val movieId = backStackEntry.arguments?.getInt("movieId") ?: 0
+                MovieDetailScreen(movieId = movieId, navController = navController)
             }
 
             composable(

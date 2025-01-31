@@ -93,7 +93,7 @@ fun LandingScreen(navController: NavController, movieViewModel: MovieViewModel =
                 items(movies) { movie ->
                     val images = movieImages[movie.id]
                     MovieItemCard(movie, configuration, images) {
-                        navController.navigate("movieDetail/${movie.title}")
+                        navController.navigate("movieDetail/${movie.id}")
                     }
                     HorizontalDivider(
                         modifier = Modifier.padding(vertical = 4.dp),

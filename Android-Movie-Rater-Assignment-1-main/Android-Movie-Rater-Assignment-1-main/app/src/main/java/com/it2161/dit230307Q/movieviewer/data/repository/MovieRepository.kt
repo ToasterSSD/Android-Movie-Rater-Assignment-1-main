@@ -3,6 +3,7 @@ package com.it2161.dit230307Q.movieviewer.data.repository
 import android.content.Context
 import com.it2161.dit230307Q.movieviewer.R
 import com.it2161.dit230307Q.movieviewer.model.ConfigurationResponse
+import com.it2161.dit230307Q.movieviewer.model.MovieDetailResponse
 import com.it2161.dit230307Q.movieviewer.model.MovieResponse
 import com.it2161.dit230307Q.movieviewer.model.MovieImagesResponse
 import com.it2161.dit230307Q.movieviewer.network.TMDBService
@@ -28,4 +29,5 @@ class MovieRepository(context: Context) {
     suspend fun getUpcomingMovies(): MovieResponse = service.getUpcomingMovies(apiKey)
     suspend fun getConfiguration(): ConfigurationResponse = service.getConfiguration(apiKey)
     suspend fun getMovieImages(movieId: Int): MovieImagesResponse = service.getMovieImages(movieId, apiKey)
+    suspend fun getMovieDetails(movieId: Int): MovieDetailResponse = service.getMovieDetails(movieId, apiKey)
 }

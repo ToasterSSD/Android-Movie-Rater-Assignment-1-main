@@ -14,11 +14,15 @@ import com.it2161.dit230307Q.movieviewer.model.MovieImagesResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import com.it2161.dit230307Q.movieviewer.model.MovieDetailResponse
 
 class MovieViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = MovieRepository(application)
 
     var selectedMovie: MovieItem? by mutableStateOf(null)
+        private set
+
+    var selectedMovieDetails: MovieDetailResponse? by mutableStateOf(null)
         private set
 
     private val _movies = MutableStateFlow<List<MovieItem>>(emptyList())
@@ -38,6 +42,12 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
     fun loadMovie(movieTitle: String) {
         viewModelScope.launch {
             selectedMovie = MovieRaterApplication.instance.data.firstOrNull { it.title == movieTitle }
+        }
+    }
+
+    fun loadMovieDetails(movieId: Int) {
+        viewModelScope.launch {
+            selectedMovieDetails = repository.getMovieDetails(movieId)
         }
     }
 
