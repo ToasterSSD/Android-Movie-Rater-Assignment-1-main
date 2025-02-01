@@ -36,4 +36,13 @@ class UserProfileViewModel(application: Application) : AndroidViewModel(applicat
             _userProfile.value = repository.getUserProfile(userName)
         }
     }
+
+    fun updateUserProfile(userProfile: UserProfile) {
+        viewModelScope.launch {
+            repository.updateUserProfile(userProfile)
+        }
+    }
+
+
+
 }

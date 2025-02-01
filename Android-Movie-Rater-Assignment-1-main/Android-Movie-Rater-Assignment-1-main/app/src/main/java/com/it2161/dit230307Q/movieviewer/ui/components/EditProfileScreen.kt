@@ -36,6 +36,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,17 +64,18 @@ import java.util.Calendar
 fun EditProfileScreen(
     navController: NavController,
     onSave: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    viewModel: UserProfileViewModel
 ) {
-    val currentProfile = MovieRaterApplication.instance.userProfile ?: UserProfile()
+    val currentProfile by viewModel.userProfile.collectAsState()
 
-    var selectedAvatar by remember { mutableStateOf(currentProfile.avatar) }
-    var userName by remember { mutableStateOf(currentProfile.userName) }
-    var email by remember { mutableStateOf(currentProfile.email) }
-    var gender by remember { mutableStateOf(currentProfile.gender) }
-    var mobile by remember { mutableStateOf(currentProfile.mobile) }
-    var yob by remember { mutableStateOf(currentProfile.yob) }
-    var updates by remember { mutableStateOf(currentProfile.updates) }
+    var selectedAvatar by remember { mutableStateOf(currentProfile?.avatar ?: R.drawable.avatar_1) }
+    var userName by remember { mutableStateOf(currentProfile?.userName ?: "") }
+    var email by remember { mutableStateOf(currentProfile?.email ?: "") }
+    var gender by remember { mutableStateOf(currentProfile?.gender ?: "") }
+    var mobile by remember { mutableStateOf(currentProfile?.mobile ?: "") }
+    var yob by remember { mutableStateOf(currentProfile?.yob ?: "") }
+    var updates by remember { mutableStateOf(currentProfile?.updates ?: false) }
 
     // State for errors
     var isEmailInvalid by remember { mutableStateOf(false) }
@@ -109,7 +111,7 @@ fun EditProfileScreen(
                                 Toast.makeText(navController.context, "Email must contain '@'", Toast.LENGTH_SHORT).show()
                             } else {
                                 // Save the user profile if validation passes
-                                MovieRaterApplication.instance.userProfile = UserProfile(
+                                val updatedProfile = UserProfile(
                                     userName = userName,
                                     email = email,
                                     gender = gender,
@@ -118,13 +120,15 @@ fun EditProfileScreen(
                                     updates = updates,
                                     avatar = selectedAvatar // Save selected avatar
                                 )
+                                viewModel.updateUserProfile(updatedProfile)
+                                MovieRaterApplication.instance.userProfile = updatedProfile
                                 onSave()
                             }
                         },
-                        modifier = Modifier.size(120.dp, 40.dp) // Adjust the size of the button
+                        modifier = Modifier.size(100.dp, 40.dp) // Set the size of the button
                     ) {
                         Icon(imageVector = Icons.Default.Save, contentDescription = "Save")
-                        Spacer(modifier = Modifier.width(8.dp)) // Adjust spacing if needed
+                        Spacer(modifier = Modifier.width(4.dp)) // Adjust spacing if needed
                         Text("Save", fontSize = 12.sp) // Adjust text size if needed
                     }
                 }

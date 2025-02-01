@@ -97,7 +97,8 @@ fun MovieViewerApp() {
                 EditProfileScreen(
                     navController = navController,
                     onSave = { navController.popBackStack() },
-                    onBack = { navController.popBackStack() }
+                    onBack = { navController.popBackStack() },
+                    viewModel = viewModel
                 )
             }
 

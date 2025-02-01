@@ -11,4 +11,10 @@ class UserProfileRepository(private val userProfileDao: UserProfileDao) {
     suspend fun getUserProfile(userName: String): UserProfile? {
         return userProfileDao.getUserProfile(userName)
     }
+
+    suspend fun updateUserProfile(userProfile: UserProfile) {
+        userProfileDao.updateUserProfile(userProfile)
+    }
+
+
 }
