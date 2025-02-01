@@ -1,4 +1,3 @@
-
 package com.it2161.dit230307Q.movieviewer.ui.components
 
 import android.widget.Toast
@@ -22,6 +21,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
@@ -57,7 +57,6 @@ import com.it2161.dit230307Q.movieviewer.R
 import com.it2161.dit230307Q.movieviewer.data.UserProfile
 import com.it2161.dit230307Q.movieviewer.ui.theme.Assignment1Theme
 import java.util.Calendar
-
 
 @ExperimentalMaterial3Api
 @Composable
@@ -122,10 +121,10 @@ fun EditProfileScreen(
                                 onSave()
                             }
                         },
-                        modifier = Modifier.size(100.dp, 40.dp) // Set the size of the button
+                        modifier = Modifier.size(120.dp, 40.dp) // Adjust the size of the button
                     ) {
-                        Icon(painter = painterResource(id = R.drawable.save), contentDescription = "Save")
-                        Spacer(modifier = Modifier.width(4.dp)) // Adjust spacing if needed
+                        Icon(imageVector = Icons.Default.Save, contentDescription = "Save")
+                        Spacer(modifier = Modifier.width(8.dp)) // Adjust spacing if needed
                         Text("Save", fontSize = 12.sp) // Adjust text size if needed
                     }
                 }
@@ -319,18 +318,5 @@ fun YearOfBirthDropdown(selectedYear: String, onYearSelected: (String) -> Unit) 
                 )
             }
         }
-    }
-}
-
-@ExperimentalMaterial3Api
-@Preview(showBackground = true)
-@Composable
-fun EditProfileScreenPreview() {
-    Assignment1Theme {
-        EditProfileScreen(
-            navController = rememberNavController(), // Mock NavController for preview
-            onSave = { /* Preview Save Action */ },
-            onBack = { /* Preview Back Action */ }
-        )
     }
 }
