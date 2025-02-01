@@ -81,12 +81,17 @@ fun MovieViewerApp() {
             }
 
             composable(
-                "comment_screen/{movieId}",
-                arguments = listOf(navArgument("movieId") { type = NavType.IntType })
+                "comment_screen/{movieId}/{reviewId}",
+                arguments = listOf(
+                    navArgument("movieId") { type = NavType.IntType },
+                    navArgument("reviewId") { type = NavType.StringType }
+                )
             ) { backStackEntry ->
                 val movieId = backStackEntry.arguments?.getInt("movieId") ?: 0
+                val reviewId = backStackEntry.arguments?.getString("reviewId") ?: ""
                 CommentMovieScreen(
                     movieId = movieId,
+                    reviewId = reviewId,
                     navController = navController
                 )
             }

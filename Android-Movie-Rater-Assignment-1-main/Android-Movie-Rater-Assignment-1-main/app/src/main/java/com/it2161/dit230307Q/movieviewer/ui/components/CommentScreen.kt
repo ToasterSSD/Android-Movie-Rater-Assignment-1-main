@@ -27,22 +27,23 @@ import com.it2161.dit230307Q.movieviewer.model.Review
 @Composable
 fun CommentMovieScreen(
     movieId: Int,
+    reviewId: String,
     navController: NavController,
     viewModel: MovieViewModel = viewModel()
 ) {
-    // Load reviews for the given movieId
-    LaunchedEffect(movieId) {
-        viewModel.loadMovieReviews(movieId)
+    // Load the selected review for the given reviewId
+    LaunchedEffect(reviewId) {
+        viewModel.loadReviewById(movieId, reviewId)
     }
 
-    val reviews = viewModel.reviews.collectAsState().value?.results
+    val selectedReview = viewModel.selectedReview
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Movie Reviews",
+                        text = "Movie Review",
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center
                     )
@@ -77,14 +78,11 @@ fun CommentMovieScreen(
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
 
-                if (reviews != null && reviews.isNotEmpty()) {
-                    reviews.forEach { review ->
-                        ReviewDetails(review = review)
-                        Spacer(modifier = Modifier.height(16.dp))
-                    }
+                if (selectedReview != null) {
+                    ReviewDetails(review = selectedReview)
                 } else {
                     Text(
-                        text = "No reviews available",
+                        text = "Review not found",
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center

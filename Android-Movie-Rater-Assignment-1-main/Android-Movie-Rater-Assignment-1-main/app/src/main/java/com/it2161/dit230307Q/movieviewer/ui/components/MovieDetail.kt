@@ -1,4 +1,3 @@
-// app/src/main/java/com/it2161/dit230307Q/movieviewer/ui/components/MovieDetail.kt
 package com.it2161.dit230307Q.movieviewer.ui.components
 
 import androidx.compose.foundation.Image
@@ -176,7 +175,7 @@ fun ReviewItem(review: Review, navController: NavController, movieId: Int) {
             .fillMaxWidth()
             .padding(8.dp)
             .clickable {
-                navController.navigate("comment_screen/${movieId}")
+                navController.navigate("comment_screen/$movieId/${review.id}")
             },
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(4.dp)

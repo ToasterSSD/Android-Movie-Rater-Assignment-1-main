@@ -100,4 +100,10 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
             _movieImages.value = _movieImages.value + (movieId to imagesResponse)
         }
     }
+    fun loadReviewById(movieId: Int, reviewId: String) {
+        viewModelScope.launch {
+            val reviewsResponse = repository.getMovieReviews(movieId)
+            selectedReview = reviewsResponse.results.firstOrNull { it.id == reviewId }
+        }
+    }
 }
