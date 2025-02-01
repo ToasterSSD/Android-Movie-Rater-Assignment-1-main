@@ -20,8 +20,7 @@ abstract class UserProfileDatabase : RoomDatabase() {
                     UserProfileDatabase::class.java,
                     "user_profile_database"
                 ).build()
-                INSTANCE = instance
-                instance
+                instance.also { INSTANCE = it }
             }
         }
     }
