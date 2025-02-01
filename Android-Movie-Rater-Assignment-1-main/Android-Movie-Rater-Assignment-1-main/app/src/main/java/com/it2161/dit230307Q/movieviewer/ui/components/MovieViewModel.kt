@@ -11,10 +11,12 @@ import com.it2161.dit230307Q.movieviewer.data.MovieItem
 import com.it2161.dit230307Q.movieviewer.data.repository.MovieRepository
 import com.it2161.dit230307Q.movieviewer.model.ConfigurationResponse
 import com.it2161.dit230307Q.movieviewer.model.MovieImagesResponse
+import com.it2161.dit230307Q.movieviewer.model.MovieDetailResponse
+import com.it2161.dit230307Q.movieviewer.model.MovieReviewsResponse
+import com.it2161.dit230307Q.movieviewer.model.Review
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import com.it2161.dit230307Q.movieviewer.model.MovieDetailResponse
 
 class MovieViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = MovieRepository(application)
@@ -34,6 +36,12 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
     private val _movieImages = MutableStateFlow<Map<Int, MovieImagesResponse>>(emptyMap())
     val movieImages: StateFlow<Map<Int, MovieImagesResponse>> = _movieImages
 
+    private val _reviews = MutableStateFlow<MovieReviewsResponse?>(null)
+    val reviews: StateFlow<MovieReviewsResponse?> = _reviews
+
+    var selectedReview: Review? by mutableStateOf(null)
+        private set
+
     init {
         fetchMovies("Popular")
         fetchConfiguration()
@@ -48,6 +56,19 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
     fun loadMovieDetails(movieId: Int) {
         viewModelScope.launch {
             selectedMovieDetails = repository.getMovieDetails(movieId)
+        }
+    }
+
+    fun loadMovieReviews(movieId: Int) {
+        viewModelScope.launch {
+            _reviews.value = repository.getMovieReviews(movieId)
+        }
+    }
+
+    fun loadReviewById(reviewId: String) {
+        viewModelScope.launch {
+            val reviewsResponse = reviews.value
+            selectedReview = reviewsResponse?.results?.firstOrNull { it.id == reviewId }
         }
     }
 

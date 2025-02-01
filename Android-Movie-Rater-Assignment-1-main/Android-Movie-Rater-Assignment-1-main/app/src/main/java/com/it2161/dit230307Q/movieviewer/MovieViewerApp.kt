@@ -12,14 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.it2161.dit230307Q.movieviewer.ui.components.AddCommentScreen
-import com.it2161.dit230307Q.movieviewer.ui.components.CommentMovieScreen
-import com.it2161.dit230307Q.movieviewer.ui.components.EditProfileScreen
-import com.it2161.dit230307Q.movieviewer.ui.components.LandingScreen
-import com.it2161.dit230307Q.movieviewer.ui.components.LoginScreen
-import com.it2161.dit230307Q.movieviewer.ui.components.MovieDetailScreen
-import com.it2161.dit230307Q.movieviewer.ui.components.ProfileScreen
-import com.it2161.dit230307Q.movieviewer.ui.components.RegisterUserScreen
+import com.it2161.dit230307Q.movieviewer.ui.components.*
 
 @ExperimentalMaterial3Api
 @Composable
@@ -30,12 +23,6 @@ fun MovieViewerApp() {
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
         val modifier = Modifier.fillMaxSize().padding(innerPadding)
-        Log.d("App data: ", "${MovieRaterApplication.instance.data.size}")
-        if (MovieRaterApplication.instance.userProfile != null) {
-            Log.d("User profile: ", "${MovieRaterApplication.instance.userProfile!!.userName}")
-        } else {
-            Log.d("User profile: ", "No user profile saved")
-        }
 
         NavHost(
             navController = navController,
@@ -94,22 +81,13 @@ fun MovieViewerApp() {
             }
 
             composable(
-                "comment_screen/{movieTitle}/{commentUser}/{commentText}/{commentDate}/{commentTime}",
-                arguments = listOf(
-                    navArgument("movieTitle") { type = NavType.StringType },
-                    navArgument("commentUser") { type = NavType.StringType },
-                    navArgument("commentText") { type = NavType.StringType },
-                    navArgument("commentDate") { type = NavType.StringType },
-                    navArgument("commentTime") { type = NavType.StringType }
-                )
+                "comment_screen/{movieId}",
+                arguments = listOf(navArgument("movieId") { type = NavType.IntType })
             ) { backStackEntry ->
+                val movieId = backStackEntry.arguments?.getInt("movieId") ?: 0
                 CommentMovieScreen(
-                    navController = navController,
-                    movieTitle = backStackEntry.arguments?.getString("movieTitle"),
-                    commentUser = backStackEntry.arguments?.getString("commentUser"),
-                    commentText = backStackEntry.arguments?.getString("commentText"),
-                    commentDate = backStackEntry.arguments?.getString("commentDate"),
-                    commentTime = backStackEntry.arguments?.getString("commentTime")
+                    movieId = movieId,
+                    navController = navController
                 )
             }
 

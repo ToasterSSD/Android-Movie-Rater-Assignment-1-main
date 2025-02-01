@@ -1,6 +1,8 @@
+// app/src/main/java/com/it2161/dit230307Q/movieviewer/ui/components/MovieDetail.kt
 package com.it2161.dit230307Q.movieviewer.ui.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,12 +20,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.it2161.dit230307Q.movieviewer.model.MovieDetailResponse
+import com.it2161.dit230307Q.movieviewer.model.Review
 
 @ExperimentalMaterial3Api
 @Composable
@@ -34,9 +38,11 @@ fun MovieDetailScreen(
 ) {
     LaunchedEffect(movieId) {
         viewModel.loadMovieDetails(movieId)
+        viewModel.loadMovieReviews(movieId)
     }
 
     val movieDetails = viewModel.selectedMovieDetails
+    val reviews by viewModel.reviews.collectAsState()
 
     if (movieDetails != null) {
         Scaffold(
@@ -147,9 +153,45 @@ fun MovieDetailScreen(
                         Text(text = "${movieDetails.revenue}", style = MaterialTheme.typography.bodyMedium)
                     }
                 }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(text = "Reviews", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(8.dp))
+
+                reviews?.results?.forEach { review ->
+                    ReviewItem(review = review, navController = navController, movieId = movieId)
+                }
             }
         }
     } else {
         Text(text = "Movie details not found", modifier = Modifier.fillMaxSize(), textAlign = TextAlign.Center)
+    }
+}
+
+@Composable
+fun ReviewItem(review: Review, navController: NavController, movieId: Int) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clickable {
+                navController.navigate("comment_screen/${movieId}")
+            },
+        shape = RoundedCornerShape(8.dp),
+        elevation = CardDefaults.cardElevation(4.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = "Author: ${review.author}", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = review.content,
+                style = MaterialTheme.typography.bodySmall,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(text = "Date: ${review.created_at}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+        }
     }
 }

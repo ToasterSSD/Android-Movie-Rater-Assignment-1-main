@@ -9,6 +9,7 @@ import com.it2161.dit230307Q.movieviewer.model.MovieImagesResponse
 import com.it2161.dit230307Q.movieviewer.network.TMDBService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import com.it2161.dit230307Q.movieviewer.model.MovieReviewsResponse
 
 class MovieRepository(context: Context) {
     private val apiKey: String = context.getString(R.string.tmdb_api_key)
@@ -30,4 +31,6 @@ class MovieRepository(context: Context) {
     suspend fun getConfiguration(): ConfigurationResponse = service.getConfiguration(apiKey)
     suspend fun getMovieImages(movieId: Int): MovieImagesResponse = service.getMovieImages(movieId, apiKey)
     suspend fun getMovieDetails(movieId: Int): MovieDetailResponse = service.getMovieDetails(movieId, apiKey)
+    suspend fun getMovieReviews(movieId: Int): MovieReviewsResponse = service.getMovieReviews(movieId, apiKey)
+
 }

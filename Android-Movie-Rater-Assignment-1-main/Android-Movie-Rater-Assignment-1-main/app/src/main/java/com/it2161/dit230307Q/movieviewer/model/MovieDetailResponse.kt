@@ -12,7 +12,8 @@ data class MovieDetailResponse(
     val title: String,
     val vote_average: Float,
     val overview: String,
-    val revenue: Long
+    val revenue: Long,
+    val problematic_field: String
 )
 
 data class Genre(
