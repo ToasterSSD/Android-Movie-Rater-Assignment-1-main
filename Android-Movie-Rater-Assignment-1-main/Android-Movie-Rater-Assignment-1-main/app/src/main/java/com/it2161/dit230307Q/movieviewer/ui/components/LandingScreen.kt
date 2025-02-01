@@ -124,10 +124,8 @@ private fun handleLogout(navController: NavController) {
 
 @Composable
 fun MovieItemCard(movie: MovieItem, configuration: ConfigurationResponse?, movieImages: MovieImagesResponse?, userName: String, onClick: () -> Unit) {
-    val backdropUrl = movieImages?.backdrops?.firstOrNull()?.file_path?.let { configuration?.images?.secure_base_url + configuration?.images?.backdrop_sizes?.get(1) + it }
     val viewModel: MovieViewModel = viewModel()
     var isFavorite by remember { mutableStateOf(false) }
-
 
     LaunchedEffect(movie.id) {
         isFavorite = viewModel.isFavoriteMovie(movie.id, userName)
@@ -146,7 +144,13 @@ fun MovieItemCard(movie: MovieItem, configuration: ConfigurationResponse?, movie
                 modifier = Modifier.padding(8.dp)
             ) {
                 Image(
-                    painter = rememberAsyncImagePainter(backdropUrl),
+                    painter = rememberAsyncImagePainter(
+                        movieImages?.backdrops?.firstOrNull()?.file_path?.let { filePath ->
+                            configuration?.images?.secure_base_url?.let { baseUrl ->
+                                baseUrl + configuration.images.backdrop_sizes[1] + filePath
+                            }
+                        }
+                    ),
                     contentDescription = "Backdrop for ${movie.title}",
                     modifier = Modifier
                         .size(100.dp)
