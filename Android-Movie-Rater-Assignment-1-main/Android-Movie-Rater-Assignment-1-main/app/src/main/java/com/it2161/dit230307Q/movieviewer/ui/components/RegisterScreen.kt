@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
@@ -71,7 +74,7 @@ fun RegisterUserScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .padding(horizontal = 36.dp),
+                .padding(horizontal = 36.dp, vertical = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Username Field
@@ -83,6 +86,9 @@ fun RegisterUserScreen(
                 },
                 label = { Text("Enter User Name") },
                 singleLine = true,
+                leadingIcon = {
+                    Icon(imageVector = Icons.Default.Person, contentDescription = null)
+                },
                 isError = isUserNameEmpty,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -155,6 +161,9 @@ fun RegisterUserScreen(
                 },
                 label = { Text("Enter Email") },
                 singleLine = true,
+                leadingIcon = {
+                    Icon(imageVector = Icons.Default.Email, contentDescription = null)
+                },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Email,
                     imeAction = ImeAction.Next
@@ -213,6 +222,9 @@ fun RegisterUserScreen(
                 },
                 label = { Text("Enter Mobile Number") },
                 singleLine = true,
+                leadingIcon = {
+                    Icon(imageVector = Icons.Default.Phone, contentDescription = null)
+                },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Done

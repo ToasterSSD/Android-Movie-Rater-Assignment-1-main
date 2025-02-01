@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
@@ -64,6 +65,9 @@ fun LoginScreen(
                 onValueChange = { userId = it },
                 label = { Text("User ID") },
                 singleLine = true,
+                leadingIcon = {
+                    Icon(imageVector = Icons.Default.Person, contentDescription = null)
+                },
                 modifier = Modifier.fillMaxWidth()
             )
 
