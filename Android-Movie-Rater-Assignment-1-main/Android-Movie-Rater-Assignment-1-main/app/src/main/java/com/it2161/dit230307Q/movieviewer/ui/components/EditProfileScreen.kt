@@ -91,7 +91,6 @@ fun EditProfileScreen(
                                     avatar = selectedAvatar // Save selected avatar
                                 )
                                 viewModel.updateUserProfile(updatedProfile)
-                                MovieRaterApplication.instance.userProfile = updatedProfile
                                 onSave()
                             }
                         },

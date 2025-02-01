@@ -41,9 +41,7 @@ class UserProfileViewModel(application: Application) : AndroidViewModel(applicat
         viewModelScope.launch {
             repository.updateUserProfile(userProfile)
             _userProfile.value = userProfile
+            MovieRaterApplication.instance.userProfile = userProfile
         }
     }
-
-
-
 }
