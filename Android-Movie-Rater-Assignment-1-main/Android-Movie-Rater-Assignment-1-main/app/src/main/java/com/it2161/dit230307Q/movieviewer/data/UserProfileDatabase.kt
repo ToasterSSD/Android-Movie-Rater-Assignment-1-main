@@ -19,7 +19,8 @@ abstract class UserProfileDatabase : RoomDatabase() {
                     context.applicationContext,
                     UserProfileDatabase::class.java,
                     "user_profile_database"
-                ).build()
+                )
+                .build()
                 instance.also { INSTANCE = it }
             }
         }
