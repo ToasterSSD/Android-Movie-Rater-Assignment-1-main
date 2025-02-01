@@ -81,16 +81,11 @@ fun MovieViewerApp() {
             }
 
             composable("profile") {
-                userProfile?.let {
-                    ProfileScreen(
-                        navController = navController,
-                        onBack = { navController.popBackStack() },
-                        userProfile = it
-                    )
-                } ?: run {
-                    // Handle the case where userProfile is null
-                    Text("Loading...", modifier = Modifier.fillMaxSize(), textAlign = TextAlign.Center)
-                }
+                ProfileScreen(
+                    navController = navController,
+                    onBack = { navController.popBackStack() },
+                    viewModel = viewModel
+                )
             }
 
             composable("edit_profile_screen") {

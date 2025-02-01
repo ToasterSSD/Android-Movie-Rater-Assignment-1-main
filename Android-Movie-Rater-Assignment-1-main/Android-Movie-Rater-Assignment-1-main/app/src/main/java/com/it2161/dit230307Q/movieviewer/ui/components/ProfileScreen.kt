@@ -8,11 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.it2161.dit230307Q.movieviewer.R
 import com.it2161.dit230307Q.movieviewer.data.UserProfile
@@ -32,8 +29,10 @@ import com.it2161.dit230307Q.movieviewer.data.UserProfile
 fun ProfileScreen(
     navController: NavController,
     onBack: () -> Unit,
-    userProfile: UserProfile
+    viewModel: UserProfileViewModel = viewModel()
 ) {
+    val userProfile by viewModel.userProfile.collectAsState()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -74,40 +73,45 @@ fun ProfileScreen(
             )
         }
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            // Avatar Section - Display selected avatar
-            Image(
-                painter = painterResource(id = userProfile.avatar),
-                contentDescription = "Profile Image",
+        userProfile?.let { profile ->
+            Column(
                 modifier = Modifier
-                    .size(150.dp)
-                    .clip(CircleShape)
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // User Details Section
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, Color.Gray, RectangleShape)
-                    .padding(16.dp)
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column {
-                    ProfileDetailItem(label = "UserName", value = userProfile.userName)
-                    ProfileDetailItem(label = "Email", value = userProfile.email)
-                    ProfileDetailItem(label = "Gender", value = userProfile.gender)
-                    ProfileDetailItem(label = "Mobile", value = userProfile.mobile)
-                    ProfileDetailItem(label = "Year of Birth", value = userProfile.yob)
-                    ProfileDetailItem(label = "Receive Updates", value = if (userProfile.updates) "Yes" else "No")
+                // Avatar Section - Display selected avatar
+                Image(
+                    painter = painterResource(id = profile.avatar),
+                    contentDescription = "Profile Image",
+                    modifier = Modifier
+                        .size(150.dp)
+                        .clip(CircleShape)
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // User Details Section
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, Color.Gray, RectangleShape)
+                        .padding(16.dp)
+                ) {
+                    Column {
+                        ProfileDetailItem(label = "UserName", value = profile.userName)
+                        ProfileDetailItem(label = "Email", value = profile.email)
+                        ProfileDetailItem(label = "Gender", value = profile.gender)
+                        ProfileDetailItem(label = "Mobile", value = profile.mobile)
+                        ProfileDetailItem(label = "Year of Birth", value = profile.yob)
+                        ProfileDetailItem(label = "Receive Updates", value = if (profile.updates) "Yes" else "No")
+                    }
                 }
             }
+        } ?: run {
+            // Handle the case where userProfile is null
+            Text("Loading...", modifier = Modifier.fillMaxSize(), textAlign = TextAlign.Center)
         }
     }
 }

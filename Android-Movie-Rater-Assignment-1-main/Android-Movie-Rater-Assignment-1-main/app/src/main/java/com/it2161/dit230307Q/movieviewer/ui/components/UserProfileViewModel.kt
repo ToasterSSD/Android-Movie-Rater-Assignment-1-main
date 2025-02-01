@@ -40,6 +40,7 @@ class UserProfileViewModel(application: Application) : AndroidViewModel(applicat
     fun updateUserProfile(userProfile: UserProfile) {
         viewModelScope.launch {
             repository.updateUserProfile(userProfile)
+            _userProfile.value = userProfile
         }
     }
 
