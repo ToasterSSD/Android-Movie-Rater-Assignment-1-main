@@ -24,16 +24,18 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.it2161.dit230307Q.movieviewer.MovieRaterApplication
 import com.it2161.dit230307Q.movieviewer.data.UserProfile
+import kotlinx.coroutines.launch
 import java.util.Calendar
 
 @Composable
 fun RegisterUserScreen(
     navController: NavController,
     onRegisterSuccess: () -> Unit,
-    onCancel: () -> Unit
+    onCancel: () -> Unit,
+    viewModel: UserProfileViewModel = viewModel()
 ) {
     val context = LocalContext.current
 
@@ -194,9 +196,12 @@ fun RegisterUserScreen(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         RadioButton(
                             selected = gender == option,
-                            onClick = { gender = option; isGenderEmpty = false }
+                            onClick = {
+                                gender = option
+                                isGenderEmpty = gender.isEmpty()
+                            }
                         )
-                        Text(option, modifier = Modifier.padding(end = 8.dp))
+                        Text(text = option)
                     }
                 }
             }
@@ -248,26 +253,23 @@ fun RegisterUserScreen(
                     value = yob,
                     onValueChange = {},
                     label = { Text("Select Year of Birth") },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().clickable { expanded = !expanded },
                     readOnly = true,
                     trailingIcon = {
-                        IconButton(onClick = { expanded = !expanded }) {
-                            Icon(Icons.Default.ArrowDropDown, contentDescription = null)
-                        }
+                        Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = null, modifier = Modifier.clickable { expanded = !expanded })
                     },
                     isError = isYobEmpty
                 )
                 DropdownMenu(
                     expanded = expanded,
-                    onDismissRequest = { expanded = false },
-                    modifier = Modifier.fillMaxWidth()
+                    onDismissRequest = { expanded = false }
                 ) {
                     years.forEach { year ->
                         DropdownMenuItem(
                             text = { Text(year) },
                             onClick = {
                                 yob = year
-                                isYobEmpty = false
+                                isYobEmpty = yob.isEmpty()
                                 expanded = false
                             }
                         )
@@ -306,7 +308,7 @@ fun RegisterUserScreen(
                     isEmailEmpty || isGenderEmpty || isMobileEmpty || isYobEmpty || isPasswordMismatch) {
                     Toast.makeText(context, "Please fill out all required fields", Toast.LENGTH_SHORT).show()
                 } else {
-                    MovieRaterApplication.instance.userProfile = UserProfile(
+                    val userProfile = UserProfile(
                         userName = userName,
                         password = password,
                         email = email,
@@ -315,9 +317,13 @@ fun RegisterUserScreen(
                         updates = updates,
                         yob = yob
                     )
+                    viewModel.insertUserProfile(userProfile)
                     Toast.makeText(context, "Registration Successful", Toast.LENGTH_SHORT).show()
+                    viewModel.loadUserProfile(userName)
                     onRegisterSuccess()
-                    navController.navigate("profile")
+                    navController.navigate("login_screen") {
+                        popUpTo("register_screen") { inclusive = true }
+                    }
                 }
             }) {
                 Text("Register")

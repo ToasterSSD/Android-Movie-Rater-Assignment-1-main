@@ -9,7 +9,11 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.it2161.dit230307Q.movieviewer.data.*
+import com.it2161.dit230307Q.movieviewer.data.repository.UserProfileRepository
 import jsonData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONException
 import java.io.File
@@ -19,6 +23,9 @@ class MovieRaterApplication : Application() {
         lateinit var instance: MovieRaterApplication
             private set
     }
+
+    val database by lazy { UserProfileDatabase.getDatabase(this) }
+    val userProfileRepository by lazy { UserProfileRepository(database.userProfileDao()) }
 
     var data = mutableListOf<MovieItem>()
         set(value) {
@@ -38,6 +45,7 @@ class MovieRaterApplication : Application() {
         super.onCreate()
         instance = this
         loadData(applicationContext)
+        loadUserProfile()
     }
 
     private fun loadMovieDataIntoList(context: Context) {
@@ -147,6 +155,12 @@ class MovieRaterApplication : Application() {
     private fun loadData(context: Context) {
         loadProfileFromFile(context)
         loadMovieDataIntoList(context)
+    }
+
+    private fun loadUserProfile() {
+        CoroutineScope(Dispatchers.IO).launch {
+            userProfile = userProfileRepository.getUserProfile("defaultUserName")
+        }
     }
 
     fun getImgVector(fileName: String): Bitmap {

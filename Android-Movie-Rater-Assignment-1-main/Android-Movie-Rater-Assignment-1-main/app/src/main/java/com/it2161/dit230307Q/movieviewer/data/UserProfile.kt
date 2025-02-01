@@ -1,9 +1,13 @@
 package com.it2161.dit230307Q.movieviewer.data
 
+
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.it2161.dit230307Q.movieviewer.R
 
+@Entity(tableName = "user_profiles")
 data class UserProfile(
-    val userName: String = "",
+    @PrimaryKey val userName: String = "",
     val password: String = "",
     val email: String = "",
     val gender: String = "",

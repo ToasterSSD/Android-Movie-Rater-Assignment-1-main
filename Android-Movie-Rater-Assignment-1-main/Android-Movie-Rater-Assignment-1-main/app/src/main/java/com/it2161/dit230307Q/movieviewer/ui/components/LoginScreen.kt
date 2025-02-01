@@ -23,13 +23,18 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.it2161.dit230307Q.movieviewer.MovieRaterApplication
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.it2161.dit230307Q.movieviewer.R
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
     onLoginSuccess: () -> Unit,
-    onNavigateToRegister: () -> Unit
+    onNavigateToRegister: () -> Unit,
+    viewModel: UserProfileViewModel = viewModel(),
+    navController: NavController
 ) {
     val context = LocalContext.current
     var userId by remember { mutableStateOf("") }
@@ -89,7 +94,7 @@ fun LoginScreen(
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(
                     onDone = {
-                        handleLogin(userId, password, context, onLoginSuccess)
+                        handleLogin(userId, password, context, onLoginSuccess, viewModel, navController)
                     }
                 ),
                 modifier = Modifier.fillMaxWidth()
@@ -99,7 +104,7 @@ fun LoginScreen(
 
             Button(
                 onClick = {
-                    handleLogin(userId, password, context, onLoginSuccess)
+                    handleLogin(userId, password, context, onLoginSuccess, viewModel, navController)
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -119,23 +124,24 @@ private fun handleLogin(
     userId: String,
     password: String,
     context: Context,
-    onLoginSuccess: () -> Unit
+    onLoginSuccess: () -> Unit,
+    viewModel: UserProfileViewModel,
+    navController: NavController
 ) {
-    val appInstance = MovieRaterApplication.instance
-    val savedProfile = appInstance.userProfile
-
     if (userId.isEmpty() || password.isEmpty()) {
         Toast.makeText(context, "Please enter both User ID and Password", Toast.LENGTH_SHORT).show()
         return
     }
 
-    if (savedProfile != null && savedProfile.userName == userId && savedProfile.password == password) {
-        Toast.makeText(context, "Login Successful!", Toast.LENGTH_SHORT).show()
-        onLoginSuccess()
-    } else if (userId == "TestUser1" && password == "TestPassword1") {
-        Toast.makeText(context, "Login Successful!", Toast.LENGTH_SHORT).show()
-        onLoginSuccess()
-    } else {
-        Toast.makeText(context, "Invalid credentials!", Toast.LENGTH_SHORT).show()
+    viewModel.viewModelScope.launch {
+        val savedProfile = viewModel.getUserProfile(userId)
+        if (savedProfile != null && savedProfile.password == password) {
+            Toast.makeText(context, "Login Successful!", Toast.LENGTH_SHORT).show()
+            viewModel.loadUserProfile(userId)
+            onLoginSuccess()
+            navController.navigate("profile")
+        } else {
+            Toast.makeText(context, "Invalid credentials!", Toast.LENGTH_SHORT).show()
+        }
     }
 }

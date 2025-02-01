@@ -1,29 +1,13 @@
-
 package com.it2161.dit230307Q.movieviewer.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,32 +21,19 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.it2161.dit230307Q.movieviewer.MovieRaterApplication
 import com.it2161.dit230307Q.movieviewer.R
 import com.it2161.dit230307Q.movieviewer.data.UserProfile
-import com.it2161.dit230307Q.movieviewer.ui.theme.Assignment1Theme
 
 @ExperimentalMaterial3Api
 @Composable
 fun ProfileScreen(
     navController: NavController,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    userProfile: UserProfile
 ) {
-    val userProfile = MovieRaterApplication.instance.userProfile ?: UserProfile(
-        userName = "John Doe",
-        email = "john.doe@example.com",
-        gender = "Male",
-        mobile = "+1234567890",
-        yob = "1990",
-        updates = true,
-        avatar = R.drawable.avatar_1 // Default avatar
-    )
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -153,18 +124,6 @@ fun ProfileDetailItem(label: String, value: String) {
         Text(
             text = value,
             fontSize = 16.sp,
-        )
-    }
-}
-
-@ExperimentalMaterial3Api
-@Preview(showBackground = true)
-@Composable
-fun ProfileScreenPreview() {
-    Assignment1Theme {
-        ProfileScreen(
-            navController = rememberNavController(),
-            onBack = { /* Navigate back */ }
         )
     }
 }

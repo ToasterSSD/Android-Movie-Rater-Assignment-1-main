@@ -5,19 +5,37 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.it2161.dit230307Q.movieviewer.ui.components.*
+import kotlinx.coroutines.launch
 
 @ExperimentalMaterial3Api
 @Composable
 fun MovieViewerApp() {
     val navController = rememberNavController()
+    val viewModel: UserProfileViewModel = viewModel()
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        coroutineScope.launch {
+            viewModel.loadUserProfile("defaultUserName")
+        }
+    }
+
+    val userProfile by viewModel.userProfile.collectAsState()
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -38,7 +56,9 @@ fun MovieViewerApp() {
                     },
                     onNavigateToRegister = {
                         navController.navigate("register_screen")
-                    }
+                    },
+                    viewModel = viewModel,
+                    navController = navController
                 )
             }
 
@@ -46,7 +66,7 @@ fun MovieViewerApp() {
                 RegisterUserScreen(
                     navController = navController,
                     onRegisterSuccess = {
-                        navController.navigate("landing_screen") {
+                        navController.navigate("login_screen") {
                             popUpTo("register_screen") { inclusive = true }
                         }
                     },
@@ -61,10 +81,16 @@ fun MovieViewerApp() {
             }
 
             composable("profile") {
-                ProfileScreen(
-                    navController = navController,
-                    onBack = { navController.popBackStack() }
-                )
+                userProfile?.let {
+                    ProfileScreen(
+                        navController = navController,
+                        onBack = { navController.popBackStack() },
+                        userProfile = it
+                    )
+                } ?: run {
+                    // Handle the case where userProfile is null
+                    Text("Loading...", modifier = Modifier.fillMaxSize(), textAlign = TextAlign.Center)
+                }
             }
 
             composable("edit_profile_screen") {

@@ -92,6 +92,8 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.runtime)
     ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
+    ksp (libs.androidx.room.compiler)
+
 
     androidTestImplementation(libs.androidx.junit.v115)
 
