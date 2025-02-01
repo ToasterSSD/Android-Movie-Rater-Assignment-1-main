@@ -7,7 +7,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.it2161.dit230307Q.movieviewer.MovieRaterApplication
+import com.it2161.dit230307Q.movieviewer.data.FavoriteMovie
 import com.it2161.dit230307Q.movieviewer.data.MovieItem
+import com.it2161.dit230307Q.movieviewer.data.repository.FavoriteMovieRepository
 import com.it2161.dit230307Q.movieviewer.data.repository.MovieRepository
 import com.it2161.dit230307Q.movieviewer.model.ConfigurationResponse
 import com.it2161.dit230307Q.movieviewer.model.MovieImagesResponse
@@ -20,6 +22,7 @@ import kotlinx.coroutines.launch
 
 class MovieViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = MovieRepository(application)
+    private val favoriteMovieRepository: FavoriteMovieRepository
 
     var selectedMovie: MovieItem? by mutableStateOf(null)
         private set
@@ -42,6 +45,52 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
     var selectedReview: Review? by mutableStateOf(null)
         private set
 
+    private val _favoriteMovies = MutableStateFlow<List<FavoriteMovie>>(emptyList())
+    val favoriteMovies: StateFlow<List<FavoriteMovie>> = _favoriteMovies
+
+    init {
+        val favoriteMovieDao = (application as MovieRaterApplication).database.favoriteMovieDao()
+        favoriteMovieRepository = FavoriteMovieRepository(favoriteMovieDao)
+    }
+
+    suspend fun isFavoriteMovie(movieId: Int, userName: String): Boolean {
+        return favoriteMovieRepository.getFavoriteMovies(userName).any { it.movieId == movieId }
+    }
+
+
+    fun addFavoriteMovie(movie: MovieItem, userName: String, file_path: String?) {
+        viewModelScope.launch {
+            val favoriteMovie = FavoriteMovie(
+                movieId = movie.id,
+                userName = userName,
+                title = movie.title,
+                overview = movie.overview,
+                posterPath = movie.poster_path ?: "",
+                voteAverage = movie.vote_average,
+                file_path = file_path ?: ""
+            )
+            favoriteMovieRepository.insertFavoriteMovie(favoriteMovie)
+            loadFavoriteMovies(userName)
+        }
+    }
+
+    fun removeFavoriteMovie(movieId: Int, userName: String) {
+        viewModelScope.launch {
+            favoriteMovieRepository.deleteFavoriteMovie(movieId, userName)
+            loadFavoriteMovies(userName)
+        }
+    }
+
+    fun loadFavoriteMovies(userName: String) {
+        viewModelScope.launch {
+            _favoriteMovies.value = favoriteMovieRepository.getFavoriteMovies(userName)
+        }
+    }
+
+    fun getMovieById(movieId: Int): MovieItem? {
+        return _movies.value.find { it.id == movieId }
+    }
+
     init {
         fetchMovies("Popular")
         fetchConfiguration()
@@ -49,7 +98,8 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
 
     fun loadMovie(movieTitle: String) {
         viewModelScope.launch {
-            selectedMovie = MovieRaterApplication.instance.data.firstOrNull { it.title == movieTitle }
+            selectedMovie =
+                MovieRaterApplication.instance.data.firstOrNull { it.title == movieTitle }
         }
     }
 
@@ -100,6 +150,7 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
             _movieImages.value = _movieImages.value + (movieId to imagesResponse)
         }
     }
+
     fun loadReviewById(movieId: Int, reviewId: String) {
         viewModelScope.launch {
             val reviewsResponse = repository.getMovieReviews(movieId)

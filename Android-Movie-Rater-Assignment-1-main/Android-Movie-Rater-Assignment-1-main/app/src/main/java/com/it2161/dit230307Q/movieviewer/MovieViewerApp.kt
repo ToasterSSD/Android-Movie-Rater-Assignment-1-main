@@ -77,7 +77,7 @@ fun MovieViewerApp() {
             }
 
             composable("landing_screen") {
-                LandingScreen(navController = navController)
+                LandingScreen(navController = navController, userProfile = userProfile)
             }
 
             composable("profile") {
@@ -125,6 +125,9 @@ fun MovieViewerApp() {
                 } else {
                     // Handle the error case where movieTitle is null or invalid
                 }
+            }
+            composable("favorite_screen") {
+                FavoriteScreen(navController = navController)
             }
         }
     }

@@ -56,7 +56,7 @@ fun MovieDetailScreen(
                         )
                     },
                     navigationIcon = {
-                        IconButton(onClick = { navController.navigate("landing_screen") }) {
+                        IconButton(onClick = { navController.popBackStack() }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "Back",

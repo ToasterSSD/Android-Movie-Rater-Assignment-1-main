@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,12 +23,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.it2161.dit230307Q.movieviewer.data.MovieItem
+import com.it2161.dit230307Q.movieviewer.data.UserProfile
 import com.it2161.dit230307Q.movieviewer.model.ConfigurationResponse
 import com.it2161.dit230307Q.movieviewer.model.MovieImagesResponse
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LandingScreen(navController: NavController, movieViewModel: MovieViewModel = viewModel()) {
+fun LandingScreen(navController: NavController, userProfile: UserProfile?, movieViewModel: MovieViewModel = viewModel()) {
     val movies by movieViewModel.movies.collectAsState()
     val configuration by remember { mutableStateOf(movieViewModel.configuration) }
     val movieImages by movieViewModel.movieImages.collectAsState()
@@ -49,14 +51,21 @@ fun LandingScreen(navController: NavController, movieViewModel: MovieViewModel =
                         DropdownMenuItem(
                             onClick = {
                                 menuExpanded = false
-                                navController.navigate("profile")
+                                navController.navigate("favorite_screen")
                             },
-                            text = { Text("View Profile") }
+                            text = { Text("Favorites") }
                         )
                         DropdownMenuItem(
                             onClick = {
                                 menuExpanded = false
-                                navController.navigate("login_screen")
+                                navController.navigate("profile")
+                            },
+                            text = { Text("Profile") }
+                        )
+                        DropdownMenuItem(
+                            onClick = {
+                                menuExpanded = false
+                                handleLogout(navController)
                             },
                             text = { Text("Logout") }
                         )
@@ -93,7 +102,7 @@ fun LandingScreen(navController: NavController, movieViewModel: MovieViewModel =
             ) {
                 items(movies) { movie ->
                     val images = movieImages[movie.id]
-                    MovieItemCard(movie, configuration, images) {
+                    MovieItemCard(movie, configuration, images, userProfile?.userName ?: "") {
                         navController.navigate("movieDetail/${movie.id}")
                     }
                     HorizontalDivider(
@@ -106,10 +115,23 @@ fun LandingScreen(navController: NavController, movieViewModel: MovieViewModel =
         }
     }
 }
+private fun handleLogout(navController: NavController) {
+    // Clear user session or any other logout logic
+    navController.navigate("login_screen") {
+        popUpTo("landing_screen") { inclusive = true }
+    }
+}
 
 @Composable
-fun MovieItemCard(movie: MovieItem, configuration: ConfigurationResponse?, movieImages: MovieImagesResponse?, onClick: () -> Unit) {
+fun MovieItemCard(movie: MovieItem, configuration: ConfigurationResponse?, movieImages: MovieImagesResponse?, userName: String, onClick: () -> Unit) {
     val backdropUrl = movieImages?.backdrops?.firstOrNull()?.file_path?.let { configuration?.images?.secure_base_url + configuration?.images?.backdrop_sizes?.get(1) + it }
+    val viewModel: MovieViewModel = viewModel()
+    var isFavorite by remember { mutableStateOf(false) }
+
+
+    LaunchedEffect(movie.id) {
+        isFavorite = viewModel.isFavoriteMovie(movie.id, userName)
+    }
 
     Card(
         modifier = Modifier
@@ -119,49 +141,61 @@ fun MovieItemCard(movie: MovieItem, configuration: ConfigurationResponse?, movie
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
-        Row(
-            modifier = Modifier.padding(8.dp)
-        ) {
-            Image(
-                painter = rememberAsyncImagePainter(backdropUrl),
-                contentDescription = "Backdrop for ${movie.title}",
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(RoundedCornerShape(8.dp))
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Column(
-                modifier = Modifier.fillMaxWidth()
+        Box {
+            Row(
+                modifier = Modifier.padding(8.dp)
             ) {
-                Text(
-                    text = movie.title,
-                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.padding(bottom = 4.dp)
+                Image(
+                    painter = rememberAsyncImagePainter(backdropUrl),
+                    contentDescription = "Backdrop for ${movie.title}",
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(RoundedCornerShape(8.dp))
                 )
-                Text(
-                    text = movie.overview,
-                    style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
+                Spacer(modifier = Modifier.width(8.dp))
+                Column(
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = "Rating: %.1f".format(movie.vote_average),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.DarkGray
+                        text = movie.title,
+                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                        modifier = Modifier.padding(bottom = 4.dp)
                     )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Icon(
-                        imageVector = Icons.Default.Star,
-                        contentDescription = "Star Icon",
-                        tint = Color.Yellow,
-                        modifier = Modifier.size(16.dp)
+                    Text(
+                        text = movie.overview,
+                        style = MaterialTheme.typography.bodyMedium,
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.padding(bottom = 4.dp)
                     )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Rating: %.1f".format(movie.vote_average),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.DarkGray
+                        )
+                    }
                 }
             }
+            Icon(
+                imageVector = if (isFavorite) Icons.Filled.Star else Icons.Outlined.Star,
+                contentDescription = if (isFavorite) "Remove from Favorites" else "Add to Favorites",
+                tint = if (isFavorite) Color.Yellow else Color.Gray,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(8.dp)
+                    .size(24.dp)
+                    .clickable {
+                        isFavorite = !isFavorite
+                        if (isFavorite) {
+                            viewModel.addFavoriteMovie(movie, userName, movieImages?.backdrops?.firstOrNull()?.file_path)
+                        } else {
+                            viewModel.removeFavoriteMovie(movie.id, userName)
+                        }
+                    }
+            )
         }
     }
 }
