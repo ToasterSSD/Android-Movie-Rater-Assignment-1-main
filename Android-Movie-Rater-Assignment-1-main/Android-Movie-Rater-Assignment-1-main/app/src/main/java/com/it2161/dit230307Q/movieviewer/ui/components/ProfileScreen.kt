@@ -124,6 +124,7 @@ fun ProfileScreen(
                         ProfileDetailItem(label = "Mobile", value = profile.mobile)
                         ProfileDetailItem(label = "Year of Birth", value = profile.yob)
                         ProfileDetailItem(label = "Receive Updates", value = if (profile.updates) "Yes" else "No")
+                        ProfileDetailItem(label = "Password", value = profile.password)
                     }
                 }
             }
