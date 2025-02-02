@@ -1,7 +1,11 @@
 package com.it2161.dit230307Q.movieviewer.model
 
-import com.it2161.dit230307Q.movieviewer.data.MovieItem
+
 
 data class MovieResponse(
-    val results: List<MovieItem>
+    val id: Int,
+    val title: String,
+    val overview: String,
+    val poster_path: String,
+    val vote_average: Float
 )

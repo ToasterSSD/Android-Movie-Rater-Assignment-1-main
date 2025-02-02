@@ -97,11 +97,7 @@ class MovieRaterApplication : Application() {
 
                     data.add(
                         MovieItem(
-                            id = id,
                             title = title,
-                            overview = overview,
-                            poster_path = posterPath,
-                            vote_average = voteAverage,
                             director = director,
                             releaseDate = releaseDate,
                             ratings_score = rating,

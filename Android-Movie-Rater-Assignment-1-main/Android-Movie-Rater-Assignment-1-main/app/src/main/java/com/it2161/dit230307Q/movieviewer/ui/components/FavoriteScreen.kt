@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.it2161.dit230307Q.movieviewer.data.MovieItem
+import com.it2161.dit230307Q.movieviewer.model.MovieResponse
 
 @Composable
 fun FavoriteScreen(navController: NavController, movieViewModel: MovieViewModel = viewModel()) {
@@ -36,23 +36,15 @@ fun FavoriteScreen(navController: NavController, movieViewModel: MovieViewModel 
             modifier = Modifier.fillMaxSize().padding(paddingValues)
         ) {
             items(favoriteMovies) { favoriteMovie ->
+                val movieResponse = MovieResponse(
+                    id = favoriteMovie.movieId,
+                    title = favoriteMovie.title,
+                    overview = favoriteMovie.overview,
+                    poster_path = favoriteMovie.posterPath,
+                    vote_average = favoriteMovie.voteAverage
+                )
                 MovieItemCard(
-                    movie = MovieItem(
-                        id = favoriteMovie.movieId,
-                        title = favoriteMovie.title,
-                        overview = favoriteMovie.overview,
-                        poster_path = favoriteMovie.posterPath,
-                        vote_average = favoriteMovie.voteAverage,
-                        director = "",
-                        releaseDate = "",
-                        ratings_score = 0f,
-                        actors = emptyList(),
-                        image = favoriteMovie.file_path,
-                        genre = "",
-                        length = 0,
-                        synopsis = "",
-                        comment = emptyList()
-                    ),
+                    movie = movieResponse,
                     configuration = null,
                     movieImages = null,
                     userName = favoriteMovie.userName

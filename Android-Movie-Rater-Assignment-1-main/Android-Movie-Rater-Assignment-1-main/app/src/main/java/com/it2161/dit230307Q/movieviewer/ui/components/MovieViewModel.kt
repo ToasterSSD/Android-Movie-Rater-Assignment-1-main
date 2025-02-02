@@ -8,12 +8,12 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.it2161.dit230307Q.movieviewer.MovieRaterApplication
 import com.it2161.dit230307Q.movieviewer.data.FavoriteMovie
-import com.it2161.dit230307Q.movieviewer.data.MovieItem
 import com.it2161.dit230307Q.movieviewer.data.repository.FavoriteMovieRepository
 import com.it2161.dit230307Q.movieviewer.data.repository.MovieRepository
 import com.it2161.dit230307Q.movieviewer.model.ConfigurationResponse
 import com.it2161.dit230307Q.movieviewer.model.MovieImagesResponse
 import com.it2161.dit230307Q.movieviewer.model.MovieDetailResponse
+import com.it2161.dit230307Q.movieviewer.model.MovieResponse
 import com.it2161.dit230307Q.movieviewer.model.MovieReviewsResponse
 import com.it2161.dit230307Q.movieviewer.model.Review
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,14 +24,14 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = MovieRepository(application)
     private val favoriteMovieRepository: FavoriteMovieRepository
 
-    var selectedMovie: MovieItem? by mutableStateOf(null)
+    var selectedMovie: MovieResponse? by mutableStateOf(null)
         private set
 
     var selectedMovieDetails: MovieDetailResponse? by mutableStateOf(null)
         private set
 
-    private val _movies = MutableStateFlow<List<MovieItem>>(emptyList())
-    val movies: StateFlow<List<MovieItem>> = _movies
+    private val _movies = MutableStateFlow<List<MovieResponse>>(emptyList())
+    val movies: StateFlow<List<MovieResponse>> = _movies
 
     var configuration: ConfigurationResponse? by mutableStateOf(null)
         private set
@@ -57,15 +57,14 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
         return favoriteMovieRepository.getFavoriteMovies(userName).any { it.movieId == movieId }
     }
 
-
-    fun addFavoriteMovie(movie: MovieItem, userName: String, file_path: String?) {
+    fun addFavoriteMovie(movie: MovieResponse, userName: String, file_path: String?) {
         viewModelScope.launch {
             val favoriteMovie = FavoriteMovie(
                 movieId = movie.id,
                 userName = userName,
                 title = movie.title,
                 overview = movie.overview,
-                posterPath = movie.poster_path ?: "",
+                posterPath = movie.poster_path,
                 voteAverage = movie.vote_average,
                 file_path = file_path ?: ""
             )
@@ -87,7 +86,7 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun getMovieById(movieId: Int): MovieItem? {
+    fun getMovieById(movieId: Int): MovieResponse? {
         return _movies.value.find { it.id == movieId }
     }
 
@@ -99,7 +98,7 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
     fun loadMovie(movieTitle: String) {
         viewModelScope.launch {
             selectedMovie =
-                MovieRaterApplication.instance.data.firstOrNull { it.title == movieTitle }
+                _movies.value.firstOrNull { it.title == movieTitle }
         }
     }
 
@@ -131,8 +130,8 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
                 "Upcoming" -> repository.getUpcomingMovies()
                 else -> repository.getPopularMovies()
             }
-            _movies.value = response.results
-            response.results.forEach { movie ->
+            _movies.value = response
+            response.forEach { movie ->
                 fetchMovieImages(movie.id)
             }
         }

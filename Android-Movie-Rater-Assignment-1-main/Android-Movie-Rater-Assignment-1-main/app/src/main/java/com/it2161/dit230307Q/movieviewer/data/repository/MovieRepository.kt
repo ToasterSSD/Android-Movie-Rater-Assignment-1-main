@@ -24,13 +24,12 @@ class MovieRepository(context: Context) {
         service = retrofit.create(TMDBService::class.java)
     }
 
-    suspend fun getPopularMovies(): MovieResponse = service.getPopularMovies(apiKey)
-    suspend fun getTopRatedMovies(): MovieResponse = service.getTopRatedMovies(apiKey)
-    suspend fun getNowPlayingMovies(): MovieResponse = service.getNowPlayingMovies(apiKey)
-    suspend fun getUpcomingMovies(): MovieResponse = service.getUpcomingMovies(apiKey)
+    suspend fun getPopularMovies(): List<MovieResponse> = service.getPopularMovies(apiKey).results
+    suspend fun getTopRatedMovies(): List<MovieResponse> = service.getTopRatedMovies(apiKey).results
+    suspend fun getNowPlayingMovies(): List<MovieResponse> = service.getNowPlayingMovies(apiKey).results
+    suspend fun getUpcomingMovies(): List<MovieResponse> = service.getUpcomingMovies(apiKey).results
     suspend fun getConfiguration(): ConfigurationResponse = service.getConfiguration(apiKey)
     suspend fun getMovieImages(movieId: Int): MovieImagesResponse = service.getMovieImages(movieId, apiKey)
     suspend fun getMovieDetails(movieId: Int): MovieDetailResponse = service.getMovieDetails(movieId, apiKey)
     suspend fun getMovieReviews(movieId: Int): MovieReviewsResponse = service.getMovieReviews(movieId, apiKey)
-
 }

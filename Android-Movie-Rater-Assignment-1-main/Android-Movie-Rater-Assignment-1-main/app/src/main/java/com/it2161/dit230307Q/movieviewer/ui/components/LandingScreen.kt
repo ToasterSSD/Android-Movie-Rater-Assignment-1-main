@@ -22,10 +22,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import com.it2161.dit230307Q.movieviewer.data.MovieItem
 import com.it2161.dit230307Q.movieviewer.data.UserProfile
 import com.it2161.dit230307Q.movieviewer.model.ConfigurationResponse
 import com.it2161.dit230307Q.movieviewer.model.MovieImagesResponse
+import com.it2161.dit230307Q.movieviewer.model.MovieResponse
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -101,8 +101,8 @@ fun LandingScreen(navController: NavController, userProfile: UserProfile?, movie
                 modifier = Modifier.fillMaxSize()
             ) {
                 items(movies) { movie ->
-                    val images = movieImages[movie.id]
-                    MovieItemCard(movie, configuration, images, userProfile?.userName ?: "") {
+                    val movieImage = movieImages[movie.id]
+                    MovieItemCard(movie, configuration, movieImage, userProfile?.userName ?: "") {
                         navController.navigate("movieDetail/${movie.id}")
                     }
                     HorizontalDivider(
@@ -115,6 +115,7 @@ fun LandingScreen(navController: NavController, userProfile: UserProfile?, movie
         }
     }
 }
+
 private fun handleLogout(navController: NavController) {
     // Clear user session or any other logout logic
     navController.navigate("login_screen") {
@@ -123,7 +124,7 @@ private fun handleLogout(navController: NavController) {
 }
 
 @Composable
-fun MovieItemCard(movie: MovieItem, configuration: ConfigurationResponse?, movieImages: MovieImagesResponse?, userName: String, onClick: () -> Unit) {
+fun MovieItemCard(movie: MovieResponse, configuration: ConfigurationResponse?, movieImages: MovieImagesResponse?, userName: String, onClick: () -> Unit) {
     val viewModel: MovieViewModel = viewModel()
     var isFavorite by remember { mutableStateOf(false) }
 
