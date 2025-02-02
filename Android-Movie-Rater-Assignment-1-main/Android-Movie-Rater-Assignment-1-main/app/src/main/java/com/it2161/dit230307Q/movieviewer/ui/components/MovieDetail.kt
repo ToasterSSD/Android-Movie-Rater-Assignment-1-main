@@ -1,8 +1,11 @@
 package com.it2161.dit230307Q.movieviewer.ui.components
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -28,6 +31,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.it2161.dit230307Q.movieviewer.model.MovieDetailResponse
 import com.it2161.dit230307Q.movieviewer.model.Review
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @ExperimentalMaterial3Api
 @Composable
 fun MovieDetailScreen(
@@ -38,10 +42,12 @@ fun MovieDetailScreen(
     LaunchedEffect(movieId) {
         viewModel.loadMovieDetails(movieId)
         viewModel.loadMovieReviews(movieId)
+        viewModel.loadSimilarMovies(movieId)
     }
 
     val movieDetails = viewModel.selectedMovieDetails
     val reviews by viewModel.reviews.collectAsState()
+    val similarMovies by viewModel.similarMovies.collectAsState()
 
     if (movieDetails != null) {
         Scaffold(
@@ -57,33 +63,25 @@ fun MovieDetailScreen(
                     },
                     navigationIcon = {
                         IconButton(onClick = { navController.popBackStack() }) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Back",
-                                tint = Color.White
-                            )
+                            Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
                         }
                     },
                     actions = {
                         var menuExpanded by remember { mutableStateOf(false) }
                         IconButton(onClick = { menuExpanded = true }) {
-                            Icon(
-                                imageVector = Icons.Default.MoreVert,
-                                contentDescription = "Menu",
-                                modifier = Modifier.size(24.dp),
-                                tint = Color.White
-                            )
+                            Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Menu")
                         }
                         DropdownMenu(
                             expanded = menuExpanded,
                             onDismissRequest = { menuExpanded = false }
                         ) {
                             DropdownMenuItem(
-                                onClick = {
-                                    menuExpanded = false
-                                    navController.navigate("add_comment_screen/${movieDetails.title}")
-                                },
-                                text = { Text("Add Comments") }
+                                text = { Text("Option 1") },
+                                onClick = { menuExpanded = false }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Option 2") },
+                                onClick = { menuExpanded = false }
                             )
                         }
                     },
@@ -98,7 +96,6 @@ fun MovieDetailScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .padding(16.dp)
                     .verticalScroll(rememberScrollState())
             ) {
                 val backdropUrl = movieDetails.backdrop_path?.let { "https://image.tmdb.org/t/p/w500$it" }
@@ -160,6 +157,24 @@ fun MovieDetailScreen(
 
                 reviews?.results?.forEach { review ->
                     ReviewItem(review = review, navController = navController, movieId = movieId)
+                }
+
+                Text(
+                    text = "Similar Movies",
+                    style = MaterialTheme.typography.titleLarge,
+                    maxLines = 4,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(8.dp)
+                )
+                LazyRow(
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(similarMovies) { movie ->
+                        MovieItemCard(movie, viewModel.configuration, viewModel.movieImages.value[movie.id], "") {
+                            navController.navigate("movieDetail/${movie.id}")
+                        }
+                    }
                 }
             }
         }

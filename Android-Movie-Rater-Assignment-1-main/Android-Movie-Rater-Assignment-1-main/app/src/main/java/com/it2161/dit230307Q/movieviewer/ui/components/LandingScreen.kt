@@ -12,6 +12,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.it2161.dit230307Q.movieviewer.data.UserProfile
 import com.it2161.dit230307Q.movieviewer.model.ConfigurationResponse
 import com.it2161.dit230307Q.movieviewer.model.MovieImagesResponse
@@ -26,29 +27,50 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.ImageLoader
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LandingScreen(navController: NavController, userProfile: UserProfile?, application: Application) {
     val movieViewModel: MovieViewModel = viewModel(factory = MovieViewModelFactory(application, SavedStateHandle()))
     val movies by movieViewModel.movies.collectAsState()
-    val configuration by remember { mutableStateOf(movieViewModel.configuration) }
+    var configuration by remember { mutableStateOf<ConfigurationResponse?>(null) }
     val movieImages by movieViewModel.movieImages.collectAsState()
     val errorMessage by movieViewModel.errorMessage.collectAsState()
     var menuExpanded by remember { mutableStateOf(false) }
     var selectedCategory by remember { mutableStateOf("Popular") }
     var searchQuery by remember { mutableStateOf(movieViewModel.searchQuery) }
     var isLoading by remember { mutableStateOf(true) }
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         movieViewModel.fetchMovies("Popular")
+        movieViewModel.fetchConfiguration()
         isLoading = false
+    }
+
+    LaunchedEffect(movieViewModel.configuration) {
+        configuration = movieViewModel.configuration
+    }
+
+    LaunchedEffect(movies) {
+        movies.forEach { movie ->
+            val imageUrl = movieImages[movie.id]?.backdrops?.firstOrNull()?.file_path?.let { filePath ->
+                configuration?.images?.secure_base_url?.let { baseUrl ->
+                    baseUrl + configuration!!.images.backdrop_sizes[1] + filePath
+                }
+            }
+            imageUrl?.let {
+                preloadImage(context, it)
+            }
+        }
     }
 
     if (isLoading) {
@@ -248,4 +270,13 @@ fun MovieItemCard(movie: MovieResponse, configuration: ConfigurationResponse?, m
             )
         }
     }
+}
+
+private fun preloadImage(context: android.content.Context, url: String) {
+    val imageLoader = ImageLoader(context)
+    val request = ImageRequest.Builder(context)
+        .data(url)
+        .memoryCachePolicy(coil.request.CachePolicy.ENABLED)
+        .build()
+    imageLoader.enqueue(request)
 }

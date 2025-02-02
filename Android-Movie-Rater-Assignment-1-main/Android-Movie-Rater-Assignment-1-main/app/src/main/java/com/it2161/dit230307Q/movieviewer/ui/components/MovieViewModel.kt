@@ -29,6 +29,10 @@ class MovieViewModel(application: Application, private val savedStateHandle: Sav
     private val _movieImages = MutableStateFlow<Map<Int, MovieImagesResponse>>(emptyMap())
     private val _reviews = MutableStateFlow<MovieReviewsResponse?>(null)
     private val _favoriteMovies = MutableStateFlow<List<FavoriteMovie>>(emptyList())
+    private val _similarMovies = MutableStateFlow<List<MovieResponse>>(emptyList())
+
+
+    val similarMovies: StateFlow<List<MovieResponse>> = _similarMovies
 
     var selectedMovie: MovieResponse? by mutableStateOf(null)
         private set
@@ -143,7 +147,7 @@ class MovieViewModel(application: Application, private val savedStateHandle: Sav
         }
     }
 
-    private fun fetchConfiguration() {
+    fun fetchConfiguration() {
         viewModelScope.launch {
             configuration = repository.getConfiguration()
         }
@@ -176,6 +180,16 @@ class MovieViewModel(application: Application, private val savedStateHandle: Sav
                 _errorMessage.value = null
             } catch (e: Exception) {
                 _errorMessage.value = "Failed to fetch search results: ${e.message}"
+            }
+        }
+    }
+
+    fun loadSimilarMovies(movieId: Int) {
+        viewModelScope.launch {
+            try {
+                _similarMovies.value = repository.getSimilarMovies(movieId)
+            } catch (e: Exception) {
+                _errorMessage.value = "Failed to fetch similar movies: ${e.message}"
             }
         }
     }

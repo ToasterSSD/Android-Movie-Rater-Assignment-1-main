@@ -33,4 +33,6 @@ class MovieRepository(context: Context) {
     suspend fun getMovieDetails(movieId: Int): MovieDetailResponse = service.getMovieDetails(movieId, apiKey)
     suspend fun getMovieReviews(movieId: Int): MovieReviewsResponse = service.getMovieReviews(movieId, apiKey)
     suspend fun searchMovies(query: String): List<MovieResponse> = service.searchMovies(apiKey, query).results
+    suspend fun getSimilarMovies(movieId: Int): List<MovieResponse> = service.getSimilarMovies(movieId, apiKey).results
+
 }
