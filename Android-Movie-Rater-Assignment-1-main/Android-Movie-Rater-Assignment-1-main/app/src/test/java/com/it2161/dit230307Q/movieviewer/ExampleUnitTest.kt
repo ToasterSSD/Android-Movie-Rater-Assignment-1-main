@@ -1,8 +1,6 @@
 package com.it2161.dit230307Q.movieviewer
 
-import org.junit.jupiter.api.Test
-
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 
 /**
  * Example local unit test, which will execute on the development machine (host).

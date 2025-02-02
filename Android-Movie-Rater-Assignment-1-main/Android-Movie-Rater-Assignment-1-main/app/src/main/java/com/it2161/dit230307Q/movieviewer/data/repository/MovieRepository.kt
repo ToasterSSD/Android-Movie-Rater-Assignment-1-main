@@ -3,7 +3,13 @@ package com.it2161.dit230307Q.movieviewer.data.repository
 import android.content.Context
 import com.it2161.dit230307Q.movieviewer.R
 import com.it2161.dit230307Q.movieviewer.data.UserProfileDatabase
-import com.it2161.dit230307Q.movieviewer.model.*
+import com.it2161.dit230307Q.movieviewer.model.ConfigurationResponse
+import com.it2161.dit230307Q.movieviewer.model.MovieDetailResponse
+import com.it2161.dit230307Q.movieviewer.model.MovieEntity
+import com.it2161.dit230307Q.movieviewer.model.MovieImagesResponse
+import com.it2161.dit230307Q.movieviewer.model.MovieResponse
+import com.it2161.dit230307Q.movieviewer.model.MovieReviewsResponse
+import com.it2161.dit230307Q.movieviewer.model.toResponse
 import com.it2161.dit230307Q.movieviewer.network.TMDBService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

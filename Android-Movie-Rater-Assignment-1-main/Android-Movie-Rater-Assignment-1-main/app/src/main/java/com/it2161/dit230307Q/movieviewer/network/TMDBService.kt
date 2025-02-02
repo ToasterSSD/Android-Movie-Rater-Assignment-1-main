@@ -1,9 +1,9 @@
 package com.it2161.dit230307Q.movieviewer.network
 
-import com.it2161.dit230307Q.movieviewer.model.MovieDetailResponse
 import com.it2161.dit230307Q.movieviewer.model.ConfigurationResponse
-import com.it2161.dit230307Q.movieviewer.model.MovieResponse
+import com.it2161.dit230307Q.movieviewer.model.MovieDetailResponse
 import com.it2161.dit230307Q.movieviewer.model.MovieImagesResponse
+import com.it2161.dit230307Q.movieviewer.model.MovieResponse
 import com.it2161.dit230307Q.movieviewer.model.MovieReviewsResponse
 import retrofit2.http.GET
 import retrofit2.http.Path

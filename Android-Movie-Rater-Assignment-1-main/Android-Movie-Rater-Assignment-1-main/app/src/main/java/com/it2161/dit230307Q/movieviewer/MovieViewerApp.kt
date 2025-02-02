@@ -5,7 +5,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -13,7 +20,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.it2161.dit230307Q.movieviewer.ui.components.*
+import com.it2161.dit230307Q.movieviewer.ui.components.AddCommentScreen
+import com.it2161.dit230307Q.movieviewer.ui.components.CommentMovieScreen
+import com.it2161.dit230307Q.movieviewer.ui.components.EditProfileScreen
+import com.it2161.dit230307Q.movieviewer.ui.components.FavoriteScreen
+import com.it2161.dit230307Q.movieviewer.ui.components.LandingScreen
+import com.it2161.dit230307Q.movieviewer.ui.components.LoadingScreen
+import com.it2161.dit230307Q.movieviewer.ui.components.LoginScreen
+import com.it2161.dit230307Q.movieviewer.ui.components.MovieDetailScreen
+import com.it2161.dit230307Q.movieviewer.ui.components.ProfileScreen
+import com.it2161.dit230307Q.movieviewer.ui.components.RegisterUserScreen
+import com.it2161.dit230307Q.movieviewer.ui.components.UserProfileViewModel
 import kotlinx.coroutines.launch
 
 @ExperimentalMaterial3Api

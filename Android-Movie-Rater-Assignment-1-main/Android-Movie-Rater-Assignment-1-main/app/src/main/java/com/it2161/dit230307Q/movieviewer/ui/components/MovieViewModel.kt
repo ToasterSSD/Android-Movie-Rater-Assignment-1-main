@@ -11,7 +11,13 @@ import com.it2161.dit230307Q.movieviewer.MovieRaterApplication
 import com.it2161.dit230307Q.movieviewer.data.FavoriteMovie
 import com.it2161.dit230307Q.movieviewer.data.repository.FavoriteMovieRepository
 import com.it2161.dit230307Q.movieviewer.data.repository.MovieRepository
-import com.it2161.dit230307Q.movieviewer.model.*
+import com.it2161.dit230307Q.movieviewer.model.ConfigurationResponse
+import com.it2161.dit230307Q.movieviewer.model.MovieDetailResponse
+import com.it2161.dit230307Q.movieviewer.model.MovieImagesResponse
+import com.it2161.dit230307Q.movieviewer.model.MovieResponse
+import com.it2161.dit230307Q.movieviewer.model.MovieReviewsResponse
+import com.it2161.dit230307Q.movieviewer.model.Review
+import com.it2161.dit230307Q.movieviewer.model.toResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
