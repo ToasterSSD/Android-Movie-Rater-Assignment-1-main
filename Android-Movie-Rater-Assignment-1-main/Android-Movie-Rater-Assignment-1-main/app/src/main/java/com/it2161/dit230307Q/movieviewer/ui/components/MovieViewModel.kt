@@ -11,12 +11,7 @@ import com.it2161.dit230307Q.movieviewer.MovieRaterApplication
 import com.it2161.dit230307Q.movieviewer.data.FavoriteMovie
 import com.it2161.dit230307Q.movieviewer.data.repository.FavoriteMovieRepository
 import com.it2161.dit230307Q.movieviewer.data.repository.MovieRepository
-import com.it2161.dit230307Q.movieviewer.model.ConfigurationResponse
-import com.it2161.dit230307Q.movieviewer.model.MovieImagesResponse
-import com.it2161.dit230307Q.movieviewer.model.MovieDetailResponse
-import com.it2161.dit230307Q.movieviewer.model.MovieResponse
-import com.it2161.dit230307Q.movieviewer.model.MovieReviewsResponse
-import com.it2161.dit230307Q.movieviewer.model.Review
+import com.it2161.dit230307Q.movieviewer.model.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -30,7 +25,6 @@ class MovieViewModel(application: Application, private val savedStateHandle: Sav
     private val _reviews = MutableStateFlow<MovieReviewsResponse?>(null)
     private val _favoriteMovies = MutableStateFlow<List<FavoriteMovie>>(emptyList())
     private val _similarMovies = MutableStateFlow<List<MovieResponse>>(emptyList())
-
 
     val similarMovies: StateFlow<List<MovieResponse>> = _similarMovies
 
@@ -133,12 +127,18 @@ class MovieViewModel(application: Application, private val savedStateHandle: Sav
 
     fun fetchMovies(category: String) {
         viewModelScope.launch {
-            val response = when (category) {
-                "Popular" -> repository.getPopularMovies()
-                "Top Rated" -> repository.getTopRatedMovies()
-                "Now Playing" -> repository.getNowPlayingMovies()
-                "Upcoming" -> repository.getUpcomingMovies()
-                else -> repository.getPopularMovies()
+            val response = try {
+                val movies = when (category) {
+                    "Popular" -> repository.getPopularMovies()
+                    "Top Rated" -> repository.getTopRatedMovies()
+                    "Now Playing" -> repository.getNowPlayingMovies()
+                    "Upcoming" -> repository.getUpcomingMovies()
+                    else -> repository.getPopularMovies()
+                }
+                repository.insertMovies(movies.map { it.toEntity(category) })
+                movies
+            } catch (e: Exception) {
+                repository.getMoviesByCategory(category).map { it.toResponse() }
             }
             _movies.value = response
             response.forEach { movie ->
