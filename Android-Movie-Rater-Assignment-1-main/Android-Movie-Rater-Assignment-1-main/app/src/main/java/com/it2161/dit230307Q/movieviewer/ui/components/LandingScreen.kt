@@ -44,107 +44,117 @@ fun LandingScreen(navController: NavController, userProfile: UserProfile?, appli
     var menuExpanded by remember { mutableStateOf(false) }
     var selectedCategory by remember { mutableStateOf("Popular") }
     var searchQuery by remember { mutableStateOf(movieViewModel.searchQuery) }
+    var isLoading by remember { mutableStateOf(true) }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("PopCornMovie") },
-                actions = {
-                    IconButton(onClick = { menuExpanded = true }) {
-                        Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Menu", tint = Color.White)
-                    }
-                    DropdownMenu(
-                        expanded = menuExpanded,
-                        onDismissRequest = { menuExpanded = false }
-                    ) {
-                        DropdownMenuItem(
-                            onClick = {
-                                menuExpanded = false
-                                navController.navigate("favorite_screen")
-                            },
-                            text = { Text("Favorites") }
-                        )
-                        DropdownMenuItem(
-                            onClick = {
-                                menuExpanded = false
-                                navController.navigate("profile")
-                            },
-                            text = { Text("Profile") }
-                        )
-                        DropdownMenuItem(
-                            onClick = {
-                                menuExpanded = false
-                                handleLogout(navController)
-                            },
-                            text = { Text("Logout") }
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = Color.White
-                )
-            )
-        }
-    ) { paddingValues ->
-        Column(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
-            OutlinedTextField(
-                value = searchQuery,
-                onValueChange = {
-                    searchQuery = it
-                    movieViewModel.searchQuery = it
-                },
-                label = { Text("Search Movies") },
-                singleLine = true,
-                shape = RoundedCornerShape(16.dp),
-                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(
-                    onSearch = {
-                        movieViewModel.searchMovies(searchQuery)
-                    }
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            )
-            if (errorMessage != null) {
-                Text(
-                    text = errorMessage ?: "",
-                    color = Color.Red,
-                    modifier = Modifier.padding(8.dp)
-                )
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Button(onClick = { selectedCategory = "Popular"; movieViewModel.fetchMovies("Popular") }) {
-                    Text("Popular")
-                }
-                Button(onClick = { selectedCategory = "Top Rated"; movieViewModel.fetchMovies("Top Rated") }) {
-                    Text("Top Rated")
-                }
-                Button(onClick = { selectedCategory = "Now Playing"; movieViewModel.fetchMovies("Now Playing") }) {
-                    Text("Now Playing")
-                }
-                Button(onClick = { selectedCategory = "Upcoming"; movieViewModel.fetchMovies("Upcoming") }) {
-                    Text("Upcoming")
-                }
-            }
-            LazyColumn(
-                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(movies) { movie ->
-                    val movieImage = movieImages[movie.id]
-                    MovieItemCard(movie, configuration, movieImage, userProfile?.userName ?: "") {
-                        navController.navigate("movieDetail/${movie.id}")
-                    }
-                    HorizontalDivider(
-                        modifier = Modifier.padding(vertical = 4.dp),
-                        thickness = 1.dp,
-                        color = Color.Gray
+    LaunchedEffect(Unit) {
+        movieViewModel.fetchMovies("Popular")
+        isLoading = false
+    }
+
+    if (isLoading) {
+        LoadingScreen()
+    } else {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text("PopCornMovie") },
+                    actions = {
+                        IconButton(onClick = { menuExpanded = true }) {
+                            Icon(imageVector = Icons.Default.MoreVert, contentDescription = "Menu", tint = Color.White)
+                        }
+                        DropdownMenu(
+                            expanded = menuExpanded,
+                            onDismissRequest = { menuExpanded = false }
+                        ) {
+                            DropdownMenuItem(
+                                onClick = {
+                                    menuExpanded = false
+                                    navController.navigate("favorite_screen")
+                                },
+                                text = { Text("Favorites") }
+                            )
+                            DropdownMenuItem(
+                                onClick = {
+                                    menuExpanded = false
+                                    navController.navigate("profile")
+                                },
+                                text = { Text("Profile") }
+                            )
+                            DropdownMenuItem(
+                                onClick = {
+                                    menuExpanded = false
+                                    handleLogout(navController)
+                                },
+                                text = { Text("Logout") }
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        titleContentColor = Color.White
                     )
+                )
+            }
+        ) { paddingValues ->
+            Column(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+                OutlinedTextField(
+                    value = searchQuery,
+                    onValueChange = {
+                        searchQuery = it
+                        movieViewModel.searchQuery = it
+                    },
+                    label = { Text("Search Movies") },
+                    singleLine = true,
+                    shape = RoundedCornerShape(16.dp),
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
+                    keyboardActions = KeyboardActions(
+                        onSearch = {
+                            movieViewModel.searchMovies(searchQuery)
+                        }
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                )
+                if (errorMessage != null) {
+                    Text(
+                        text = errorMessage ?: "",
+                        color = Color.Red,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(8.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Button(onClick = { selectedCategory = "Popular"; movieViewModel.fetchMovies("Popular") }) {
+                        Text("Popular")
+                    }
+                    Button(onClick = { selectedCategory = "Top Rated"; movieViewModel.fetchMovies("Top Rated") }) {
+                        Text("Top Rated")
+                    }
+                    Button(onClick = { selectedCategory = "Now Playing"; movieViewModel.fetchMovies("Now Playing") }) {
+                        Text("Now Playing")
+                    }
+                    Button(onClick = { selectedCategory = "Upcoming"; movieViewModel.fetchMovies("Upcoming") }) {
+                        Text("Upcoming")
+                    }
+                }
+                LazyColumn(
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(movies) { movie ->
+                        val movieImage = movieImages[movie.id]
+                        MovieItemCard(movie, configuration, movieImage, userProfile?.userName ?: "") {
+                            navController.navigate("movieDetail/${movie.id}")
+                        }
+                        HorizontalDivider(
+                            modifier = Modifier.padding(vertical = 4.dp),
+                            thickness = 1.dp,
+                            color = Color.Gray
+                        )
+                    }
                 }
             }
         }
