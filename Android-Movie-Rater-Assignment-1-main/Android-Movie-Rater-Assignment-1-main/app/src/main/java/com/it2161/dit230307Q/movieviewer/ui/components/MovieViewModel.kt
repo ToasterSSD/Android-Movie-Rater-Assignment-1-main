@@ -164,6 +164,10 @@ class MovieViewModel(application: Application, private val savedStateHandle: Sav
     }
 
     fun searchMovies(query: String) {
+        if (query.isBlank()) {
+            fetchMovies("Popular")
+            return
+        }
         searchQuery = query
         viewModelScope.launch {
             try {

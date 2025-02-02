@@ -1,5 +1,6 @@
 package com.it2161.dit230307Q.movieviewer.ui.components
 
+import android.app.Application
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -8,6 +9,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
+import com.it2161.dit230307Q.movieviewer.data.UserProfile
+import com.it2161.dit230307Q.movieviewer.model.ConfigurationResponse
+import com.it2161.dit230307Q.movieviewer.model.MovieImagesResponse
+import com.it2161.dit230307Q.movieviewer.model.MovieResponse
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Star
@@ -22,17 +30,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
-import com.it2161.dit230307Q.movieviewer.data.UserProfile
-import com.it2161.dit230307Q.movieviewer.model.ConfigurationResponse
-import com.it2161.dit230307Q.movieviewer.model.MovieImagesResponse
-import com.it2161.dit230307Q.movieviewer.model.MovieResponse
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LandingScreen(navController: NavController, userProfile: UserProfile?, movieViewModel: MovieViewModel = viewModel()) {
+fun LandingScreen(navController: NavController, userProfile: UserProfile?, application: Application) {
+    val movieViewModel: MovieViewModel = viewModel(factory = MovieViewModelFactory(application, SavedStateHandle()))
     val movies by movieViewModel.movies.collectAsState()
     val configuration by remember { mutableStateOf(movieViewModel.configuration) }
     val movieImages by movieViewModel.movieImages.collectAsState()

@@ -1,18 +1,17 @@
 package com.it2161.dit230307Q.movieviewer
 
+import android.app.Application
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -24,7 +23,7 @@ import kotlinx.coroutines.launch
 
 @ExperimentalMaterial3Api
 @Composable
-fun MovieViewerApp() {
+fun MovieViewerApp(application: Application) {
     val navController = rememberNavController()
     val viewModel: UserProfileViewModel = viewModel()
     val coroutineScope = rememberCoroutineScope()
@@ -77,7 +76,7 @@ fun MovieViewerApp() {
             }
 
             composable("landing_screen") {
-                LandingScreen(navController = navController, userProfile = userProfile)
+                LandingScreen(navController = navController, userProfile = userProfile, application = application)
             }
 
             composable("profile") {
