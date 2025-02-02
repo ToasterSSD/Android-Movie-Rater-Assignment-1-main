@@ -37,4 +37,7 @@ interface TMDBService {
 
     @GET("movie/{movie_id}/reviews")
     suspend fun getMovieReviews(@Path("movie_id") movieId: Int, @Query("api_key") apiKey: String): MovieReviewsResponse
+
+    @GET("search/movie")
+    suspend fun searchMovies(@Query("api_key") apiKey: String, @Query("query") query: String): MovieListResponse
 }

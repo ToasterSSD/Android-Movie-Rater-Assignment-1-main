@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Star
@@ -17,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -33,8 +36,10 @@ fun LandingScreen(navController: NavController, userProfile: UserProfile?, movie
     val movies by movieViewModel.movies.collectAsState()
     val configuration by remember { mutableStateOf(movieViewModel.configuration) }
     val movieImages by movieViewModel.movieImages.collectAsState()
+    val errorMessage by movieViewModel.errorMessage.collectAsState()
     var menuExpanded by remember { mutableStateOf(false) }
     var selectedCategory by remember { mutableStateOf("Popular") }
+    var searchQuery by remember { mutableStateOf(movieViewModel.searchQuery) }
 
     Scaffold(
         topBar = {
@@ -79,6 +84,32 @@ fun LandingScreen(navController: NavController, userProfile: UserProfile?, movie
         }
     ) { paddingValues ->
         Column(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = {
+                    searchQuery = it
+                    movieViewModel.searchQuery = it
+                },
+                label = { Text("Search Movies") },
+                singleLine = true,
+                shape = RoundedCornerShape(16.dp),
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(
+                    onSearch = {
+                        movieViewModel.searchMovies(searchQuery)
+                    }
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            )
+            if (errorMessage != null) {
+                Text(
+                    text = errorMessage ?: "",
+                    color = Color.Red,
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
             Row(
                 modifier = Modifier.fillMaxWidth().padding(8.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly

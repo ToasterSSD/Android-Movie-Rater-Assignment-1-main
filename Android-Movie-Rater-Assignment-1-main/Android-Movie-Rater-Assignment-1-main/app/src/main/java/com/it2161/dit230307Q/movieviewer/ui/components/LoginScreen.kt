@@ -139,7 +139,7 @@ private fun handleLogin(
             Toast.makeText(context, "Login Successful!", Toast.LENGTH_SHORT).show()
             viewModel.loadUserProfile(userId)
             onLoginSuccess()
-            navController.navigate("profile")
+            navController.navigate("landing_screen")
         } else {
             Toast.makeText(context, "Invalid credentials!", Toast.LENGTH_SHORT).show()
         }

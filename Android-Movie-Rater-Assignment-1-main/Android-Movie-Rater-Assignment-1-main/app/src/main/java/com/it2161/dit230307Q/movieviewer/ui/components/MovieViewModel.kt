@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.it2161.dit230307Q.movieviewer.MovieRaterApplication
 import com.it2161.dit230307Q.movieviewer.data.FavoriteMovie
@@ -20,9 +21,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class MovieViewModel(application: Application) : AndroidViewModel(application) {
+class MovieViewModel(application: Application, private val savedStateHandle: SavedStateHandle) : AndroidViewModel(application) {
     private val repository = MovieRepository(application)
     private val favoriteMovieRepository: FavoriteMovieRepository
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    private val _movies = MutableStateFlow<List<MovieResponse>>(emptyList())
+    private val _movieImages = MutableStateFlow<Map<Int, MovieImagesResponse>>(emptyMap())
+    private val _reviews = MutableStateFlow<MovieReviewsResponse?>(null)
+    private val _favoriteMovies = MutableStateFlow<List<FavoriteMovie>>(emptyList())
 
     var selectedMovie: MovieResponse? by mutableStateOf(null)
         private set
@@ -30,27 +36,33 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
     var selectedMovieDetails: MovieDetailResponse? by mutableStateOf(null)
         private set
 
-    private val _movies = MutableStateFlow<List<MovieResponse>>(emptyList())
     val movies: StateFlow<List<MovieResponse>> = _movies
 
     var configuration: ConfigurationResponse? by mutableStateOf(null)
         private set
 
-    private val _movieImages = MutableStateFlow<Map<Int, MovieImagesResponse>>(emptyMap())
     val movieImages: StateFlow<Map<Int, MovieImagesResponse>> = _movieImages
 
-    private val _reviews = MutableStateFlow<MovieReviewsResponse?>(null)
     val reviews: StateFlow<MovieReviewsResponse?> = _reviews
 
     var selectedReview: Review? by mutableStateOf(null)
         private set
 
-    private val _favoriteMovies = MutableStateFlow<List<FavoriteMovie>>(emptyList())
     val favoriteMovies: StateFlow<List<FavoriteMovie>> = _favoriteMovies
+
+    val errorMessage: StateFlow<String?> = _errorMessage
+
+    var searchQuery: String
+        get() = savedStateHandle.get<String>("searchQuery") ?: ""
+        set(value) {
+            savedStateHandle.set("searchQuery", value)
+        }
 
     init {
         val favoriteMovieDao = (application as MovieRaterApplication).database.favoriteMovieDao()
         favoriteMovieRepository = FavoriteMovieRepository(favoriteMovieDao)
+        fetchMovies("Popular")
+        fetchConfiguration()
     }
 
     suspend fun isFavoriteMovie(movieId: Int, userName: String): Boolean {
@@ -90,15 +102,9 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
         return _movies.value.find { it.id == movieId }
     }
 
-    init {
-        fetchMovies("Popular")
-        fetchConfiguration()
-    }
-
     fun loadMovie(movieTitle: String) {
         viewModelScope.launch {
-            selectedMovie =
-                _movies.value.firstOrNull { it.title == movieTitle }
+            selectedMovie = _movies.value.firstOrNull { it.title == movieTitle }
         }
     }
 
@@ -154,6 +160,19 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             val reviewsResponse = repository.getMovieReviews(movieId)
             selectedReview = reviewsResponse.results.firstOrNull { it.id == reviewId }
+        }
+    }
+
+    fun searchMovies(query: String) {
+        searchQuery = query
+        viewModelScope.launch {
+            try {
+                val response = repository.searchMovies(query)
+                _movies.value = response
+                _errorMessage.value = null
+            } catch (e: Exception) {
+                _errorMessage.value = "Failed to fetch search results: ${e.message}"
+            }
         }
     }
 }
